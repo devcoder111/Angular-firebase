@@ -1,0 +1,10 @@
+{
+  "projectId": "foodrazor-e2e",
+  "video": false,
+  "Screenshots": false,
+  "baseUrl": "https://foodrazor-e2e.firebaseapp.com/",
+  "env": {
+    "demoEmail": "test1@gmail.com",
+    "demoPassword": "12345678"
+  }
+}

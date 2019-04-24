@@ -1,0 +1,116 @@
+.mat-button
+  border-radius: $globalBorderRadius !important
+  box-shadow: none !important
+  background: transparent
+  min-width: 120px !important
+  padding: 0 24px !important
+  height: 42px
+
+  .mat-icon
+    font-size: 18px
+    vertical-align: -4px !important
+
+  .button-wrapper &
+    margin: 8px !important
+
+  .mat-toolbar &
+    border-radius: 0 !important
+
+  &.mat-primary, &.mat-warn, &.mat-primary[disabled]
+    color: #fff !important
+    +no-border(!important)
+
+  &.mat-transparent
+    +border($colorSlateGrey, !important)
+
+  &.mat-primary
+    background: $colorCoolGreen
+
+  &.mat-gray
+    background: #eceeef
+    +border(#cccccc, !important)
+
+  &.mat-warn
+    background: $colorDanger
+
+  &.mat-primary[disabled]
+    background: #ddd !important
+    color: #aaa !important
+
+  &.mat-transparent[disabled]
+    border-color: #ddd !important
+    color: #bbb !important
+
+.mat-icon-button
+  min-width: 0 !important
+  border-radius: 50% !important
+  margin: 0 !important
+  padding: 0 !important
+
+button[mat-fab]
+  position: absolute
+  bottom: 10px
+  right: 10px
+
+.mat-button.mat-transparent
+  border: none !important
+  background: rgba(0, 0, 0, 0.08)
+
+  &:hover
+    background: rgba(0, 0, 0, 0.1)
+
+  &.cdk-focused
+    background: rgba(0, 0, 0, 0.12)
+
+a.menu-item-button
+  margin: 10px !important
+  padding: 0 !important
+  height: 42px !important
+  color: $colorWhite !important
+  border-radius: $globalBorderRadius
+  background: $menuButtonBackground !important
+
+  &:hover
+    background: darken($menuButtonBackground, 10) !important
+
+.button-wrapper
+  margin: -8px
+
+button.mat-button.mat-icon-button
+  font-size: 22px
+  margin: 0 !important
+  background: #eceeef
+  color: #a0a0a0 !important
+  line-height: 30px
+  border-radius: 0 $globalBorderRadius $globalBorderRadius 0 !important
+  display: block
+  width: 100%
+  height: 100%
+
+button.button--add.mat-button
+  padding: 0 10px 0 5px !important
+  margin: 0 0 20px 0 !important
+  display: inline-block !important
+  background: transparent !important
+  flex: 0 0 180px
+  +no-border(!important)
+  text-transform: uppercase
+  font-size: $fontSizeL
+  font-weight: bold
+  color: $colorCoolGreen !important
+  &[disabled], &:hover
+    color: $colorWarmGray !important
+    .mat-button-focus-overlay
+      background: transparent !important
+
+  &.cdk-focused
+    background: #fafafa !important
+    .mat-button-focus-overlay
+      background: transparent !important
+
+  .mat-icon
+    font-size: 27px !important
+    vertical-align: -7px !important
+
+button.popup-message__close.mat-icon-button:hover mat-icon
+  color: #a00

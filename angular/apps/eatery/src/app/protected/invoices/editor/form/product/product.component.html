@@ -1,0 +1,69 @@
+<ng-container [formGroup]="productForm">
+  <td>
+    <img [src]="product.image || 'assets/image-placeholder.png'" class="table__icon-image" alt="Preview"/>
+  </td>
+  <td>
+    <p>{{product.nickname}}</p>
+    <p>{{product.code}}</p>
+    <p>{{product.name}}</p>
+  </td>
+  <td>
+    <mat-form-field floatLabel="never">
+      <input class="table__unit-price"
+             matInput
+             placeholder="Price"
+             formControlName="price"
+             type="number"
+             [min]="minPrice">
+      <span matPrefix>$&nbsp;</span>
+      <mat-error *ngIf="productForm.controls['price'].hasError('required')">
+        Field is <strong>required</strong>
+      </mat-error>
+      <mat-error *ngIf="productForm.controls['price'].hasError('min')">
+        Negative values are not allowed
+      </mat-error>
+    </mat-form-field>
+  </td>
+  <td>
+    <mat-form-field floatLabel="never">
+      <input class="table__quantity"
+             matInput
+             formControlName="quantity"
+             placeholder="Quantity"
+             type="number"
+             [min]="minQuantity">
+      <mat-hint align="start">{{product.unitTypeName}}</mat-hint>
+      <mat-error *ngIf="productForm.controls['quantity'].hasError('required')">
+        Field is <strong>required</strong>
+      </mat-error>
+      <mat-error *ngIf="productForm.controls['quantity'].hasError('min')">
+        Must be positive
+      </mat-error>
+    </mat-form-field>
+  </td>
+  <td>
+    <mat-form-field floatLabel="never">
+      <input class="table__discount"
+             matInput
+             formControlName="discount"
+             placeholder="Discount"
+             type="number"
+             [min]="minDiscount" max="100">
+      <span matSuffix>%&nbsp;</span>
+      <mat-error *ngIf="productForm.controls['discount'].hasError('required')">
+        Field is <strong>required</strong>
+      </mat-error>
+      <mat-error *ngIf="productForm.controls['discount'].hasError('min')">
+        Negative values are not allowed
+      </mat-error>
+    </mat-form-field>
+  </td>
+  <td>
+    <strong>{{product.total | money}}</strong>
+  </td>
+  <td>
+    <button type="button" *ngIf="canBeSaved" [disabled]="isReadOnly" mat-icon-button (click)="remove(product)">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </td>
+</ng-container>

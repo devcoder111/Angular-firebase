@@ -1,0 +1,39 @@
+.filters
+  padding-left: 0
+  font-size: $fontSizeM
+  margin-top: 0
+
+  &__item
+    display: inline-block
+    padding: 10px 0
+    margin-right: 30px
+    transition: all .2s
+    border-bottom: solid 3px transparent
+
+    &__link
+      letter-spacing: .3px
+      color: #453937
+      text-decoration: none
+
+      &:hover
+        color: lighten(#453937, 20%)
+
+    &__count
+      border-radius: 20px
+      border: solid 1px #979797
+      font-size: $fontSizeXS
+      font-weight: bold
+      color: $colorSlateGrey
+      padding: 3px 9px 2px
+      margin-left: 6px
+
+    &--active
+      border-bottom-color: $colorSlateBlue
+
+      .filter__item__link
+        color: $colorSlateBlue
+
+    &--active:hover
+      border-bottom-color: lighten($colorSlateBlue, 20%)
+      .filter__item__link
+        color: lighten(#453937, 20%)

@@ -1,0 +1,23 @@
+{
+  "name": "firestore-rules",
+  "version": "1.0.0",
+  "description": "Unit-tests for firestore security rules",
+  "main": "jest.config.js",
+  "author": "Anton Shubin <2spy4x@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.1",
+    "jest": "^23.5.0",
+    "ts-jest": "^23.1.4",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "firebase": "^5.4.2",
+    "glob": "^7.1.3"
+  }
+}

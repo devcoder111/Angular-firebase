@@ -1,0 +1,40 @@
+{
+  "firestore": {
+    "rules": "firebase/firestore/rules/firestore.rules",
+    "indexes": "firebase/firestore/indexes/firestore.indexes.json",
+    "predeploy": [
+      "yarn pre-deploy:firestore"
+    ]
+  },
+  "storage": {
+    "rules": "firebase/storage/storage.rules"
+  },
+  "functions": {
+    "source": "firebase/functions",
+    "predeploy": [
+      "yarn pre-deploy:functions"
+    ]
+  },
+  "hosting": {
+    "public": "firebase/hosting",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/*.map",
+      "**/node_modules/**"
+    ],
+    "predeploy": [
+      "yarn pre-deploy:angular"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "function": "httpsOnRequest"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

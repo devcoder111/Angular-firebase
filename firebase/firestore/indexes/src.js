@@ -1,0 +1,53 @@
+// @formatter:off
+exports.FIREBASE_INDEXES = {
+  files: [{ sourceId: 'A', sourceType: 'A', 'meta.sortingNumber': 'A' }],
+  invoices: [
+    { isDeleted: 'A', organizationId: 'A', createdAt: 'D' },
+    { isDeleted: 'A', organizationId: 'A', number: 'A', createdAt: 'D' },
+    { isDeleted: 'A', locationId: 'A', createdAt: 'D' },
+    { isDeleted: 'A', locationId: 'A', number: 'A', createdAt: 'D' },
+    { status: 'A', createdAt: 'D' },
+    { status: 'A', number: 'A', createdAt: 'D' },
+    { status: 'A', supplierId: 'A', number: 'A', createdAt: 'D' },
+    { supplierId: 'A', createdAt: 'D' },
+    { supplierId: 'A', number: 'A', createdAt: 'D' },
+  ],
+  locations: [
+    { code: 'A', createdAt: 'D' },
+    { code: 'A', name: 'A', createdAt: 'D' },
+    { isDeleted: 'A', organizationId: 'A', name: 'A' },
+    { isDeleted: 'A', organizationId: 'A', createdAt: 'D' },
+    { isDeleted: 'A', organizationId: 'A', name: 'A', createdAt: 'D' },
+    { organizationId: 'A', name: 'A' },
+    { availableForUsers: 'AC', name: 'A' },
+    { isDeleted: 'A', availableForUsers: 'AC', organizationId: 'A', name: 'A' },
+  ],
+  notificationsQueue: [{ processingStartedAt: 'A', timestamp: 'A' }],
+  orders: [
+    { isDeleted: 'A', locationId: 'A', createdAt: 'D' },
+    { isDeleted: 'A', locationId: 'A', number: 'A', createdAt: 'D' },
+    { isDeleted: 'A', locationId: 'A', status: 'A', number: 'A', createdAt: 'D' },
+    { isDeleted: 'A', organizationId: 'A', createdAt: 'D' },
+    { isDeleted: 'A', organizationId: 'A', number: 'A', createdAt: 'D' },
+    { status: 'A', createdAt: 'D' },
+    { status: 'A', number: 'A', createdAt: 'D' },
+    { supplierId: 'A', createdAt: 'D' },
+    { supplierId: 'A', number: 'A', createdAt: 'D' },
+  ],
+  organizations: [{ isDeleted: 'A', createdAt: 'D' }, { isDeleted: 'A', name: 'A', createdAt: 'D' }],
+  productCategories: [{ isDeleted: 'A', organizationId: 'A', name: 'A' }],
+  products: [
+    { name: 'A', createdAt: 'D' },
+    { organizationId: 'A', createdAt: 'D' },
+    { organizationId: 'A', supplierId: 'A', nickname: 'A' },
+    { organizationId: 'A', name: 'A', createdAt: 'D' },
+  ],
+  suppliers: [
+    { name: 'A', createdAt: 'D' },
+    { organizationId: 'A', createdAt: 'D' },
+    { organizationId: 'A', name: 'A' },
+    { organizationId: 'A', name: 'A', createdAt: 'D' },
+  ],
+  permissions: [{ organizationId: 'A', displayName: 'A' }, { role: 'A', displayName: 'A' }],
+};
+// @formatter:on

@@ -1,0 +1,73 @@
+<div class="container">
+
+  <header class="container__header">
+    <fr-header>Upload Invoice</fr-header>
+  </header>
+
+  <main class="container__main">
+
+    <div class="dropzone">
+      <input type="file"
+             multiple
+             (change)="uploadFile($event)"
+             class="dropzone__file-input"
+             title="Click to upload files"
+             accept="application/pdf,image/vnd.sealedmedia.softseal-jpg,image/jpeg,image/pjpeg,image/png"/>
+      <div class="dropzone__text">
+        <p class="dropzone__text__description m-t-0">
+          The following file formats are supported: JPG, PNG (10 MB per file), PDF (100 MB per file).
+        </p>
+        <p class="dropzone__text__description m-t-0">
+          <strong>Drag files here to upload</strong>
+        </p>
+        <div class="dropzone__text__button">
+          <span class="dropzone__text__button__before-button">OR</span>
+          <button type="button" mat-button color="primary">Browse files</button>
+        </div>
+      </div>
+      <div class="dropzone__hint-on-drag">
+        <h1>Drop your file here</h1>
+      </div>
+    </div>
+
+    <div class="flex-row flex-row--grid upload-list">
+      <div *ngFor="let task of tasks; trackBy: trackByFn()"
+           class="flex-col flex-col--grid upload-list__file"
+           [class.upload-list__file--completed]="task.status === 'completed'"
+           [class.upload-list__file--error]="task.status === 'error'">
+        <div class="upload-list__file__preview" [style.background-image]="'url('+task.previewDataURL+')'">
+          <div class="upload-list__file__preview__info">
+            <ng-container [ngSwitch]="task.status">
+              <mat-icon *ngSwitchCase="'inProgress'" color="gray" class="mat-icon--rotate">sync</mat-icon>
+              <mat-icon *ngSwitchCase="'error'" color="warn">block</mat-icon>
+              <mat-icon *ngSwitchCase="'completed'" color="green">check_circle</mat-icon>
+            </ng-container>
+            <ng-container *ngIf="task.status === 'error'; else progress">
+              <p>Upload failed. <br>{{task.error.message}}</p>
+            </ng-container>
+            <ng-template #progress>
+              <p>{{task.progress$ | async | number}}% completed</p>
+              <mat-progress-bar mode="determinate" [value]="task.progress$ | async | number"></mat-progress-bar>
+            </ng-template>
+          </div>
+        </div>
+        <div *ngIf="task.fileSize" class="upload-list__file__size">
+          <p>File Size: {{task.fileSize}}MB</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="popup-message"
+       *ngIf="(tasks | filterByField : {'status': 'completed', error: null}).length && !wasBottomInfoPanelClosed">
+    <p class="popup-message__inner">Go to
+      <a routerLink="/invoices" class="popup-message__inner__link">Invoice List</a>
+      page to view your {{(tasks | filterByField : {'status': 'completed', error: null}).length }} scanned document(s)
+    </p>
+    <button mat-icon-button (click)="wasBottomInfoPanelClosed = true" class="popup-message__close">
+      <mat-icon color="gray">close</mat-icon>
+    </button>
+  </div>
+
+</div>

@@ -1,0 +1,3 @@
+match /countersLocationOrderNumber/{id} {
+  allow read, write: if isAuthenticated() // TODO: implement
+}

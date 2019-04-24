@@ -1,0 +1,53 @@
+<ng-container [formGroup]="form">
+  <td>
+    <p>{{product.code}}</p>
+  </td>
+  <td>
+    <img [src]="product.image || 'assets/image-placeholder.png'" class="table__icon-image" alt="Preview"/>
+  </td>
+  <td>
+    <p><strong>{{product.nickname}}</strong></p>
+    <p>{{product.name}}</p>
+  </td>
+  <td>
+    <span>{{product.price | money}}</span>
+  </td>
+  <td>
+    <div class="input-wrapper">
+      <span class="increase-count"
+            *ngIf="!isReadOnly"
+            (click)="ref.value = (ref.value == 0 ? 0 : ref.value  - 1); setProductAmount(product, +(ref.value))">-</span>
+      <input #ref
+             matInput
+             formControlName="quantity"
+             placeholder="Quantity"
+             type="number"
+             min="1"
+             class="count-input">
+      <span class="decrease-count"
+            *ngIf="!isReadOnly"
+            (click)="ref.value = +ref.value + 1; setProductAmount(product, +(ref.value))">+</span>
+    </div>
+    <div class="m-t-05">
+      <mat-error *ngIf="form.controls['quantity'].hasError('required')">
+        Field is <strong>required</strong>
+      </mat-error>
+      <mat-error *ngIf="form.controls['quantity'].hasError('min')">
+        Must be positive
+      </mat-error>
+    </div>
+  </td>
+  <td>
+    <span>{{product.unitTypeName}}</span>
+  </td>
+  <td>{{product.total | money}}</td>
+  <td>
+    <button
+      type="button"
+      mat-icon-button
+      (click)="remove(product)"
+      *ngIf="!isReadOnly">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </td>
+</ng-container>

@@ -1,0 +1,11 @@
+{
+  "name": "dev-scripts",
+  "scripts": {
+    "install-all": "yarn --cwd \"fillFirebaseWithDemoData\" install && yarn --cwd \"playground\" install && yarn --cwd \"backup\" install",
+    "build": "yarn --cwd \"fillFirebaseWithDemoData\" build && yarn --cwd \"playground\" build && yarn --cwd \"backup\" build",
+    "fill-firebase-with-demo-data": "yarn --cwd \"fillFirebaseWithDemoData\" start",
+    "playground": "yarn --cwd \"playground\" start",
+    "backup": "yarn --cwd \"backup\" start"
+  },
+  "private": true
+}

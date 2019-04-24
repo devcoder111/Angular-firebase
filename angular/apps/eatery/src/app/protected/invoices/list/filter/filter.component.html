@@ -1,0 +1,52 @@
+<form [formGroup]="form"
+      novalidate>
+  <div class="flex-row flex-row--grid">
+    <div class="flex-col flex-col--grid flex-col--4">
+      <mat-form-field>
+        <fr-autocomplete-input formControlName="supplierId" [config]="selectSupplierConfig"
+                               [placeholder]="filter.supplierId ? 'Supplier' : 'All suppliers'"></fr-autocomplete-input>
+      </mat-form-field>
+    </div>
+
+    <div class="flex-col flex-col--grid flex-col--4" *ngIf="isActivePositionOrganization$ | async">
+      <mat-form-field>
+        <fr-autocomplete-input formControlName="locationId" [config]="selectLocationConfig"
+                               [placeholder]="filter.locationId ? 'Location' : 'All locations'"></fr-autocomplete-input>
+      </mat-form-field>
+    </div>
+
+    <div class="flex-col flex-col--grid">
+      <mat-form-field>
+        <input matInput
+               placeholder="Search by number"
+               formControlName="number"/>
+        <button type="button" mat-button matSuffix mat-icon-button>
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <div class="flex-col flex-col--grid flex-col--1">
+      <mat-slide-toggle formControlName="isDeleted">Is deleted?</mat-slide-toggle>
+    </div>
+    <div class="flex-col flex-col--grid flex-col--1 flex-col--offset-1">
+      <button class="btn-clear-filter" type="button" mat-button color="transparent" (click)="clearFilter()">
+        <mat-icon>clear</mat-icon>
+        Clear filter
+      </button>
+    </div>
+  </div>
+
+  <div class="button-wrapper">
+    <button mat-button
+            *ngIf="(canBeModified$ | async)"
+            routerLink="/invoices/create"
+            type="button"
+            class="button--add">
+      <mat-icon>add</mat-icon>
+      <span>* Add Invoice Manually</span>
+    </button>
+  </div>
+
+  <fr-status-filter formControlName="status" [options]="statuses"></fr-status-filter>
+</form>

@@ -1,0 +1,34 @@
+<ng-container [formGroup]="adjustmentForm">
+  <td>
+    <strong>{{adjustment.name}}</strong>
+    <small>Adjustment</small>
+  </td>
+  <td>
+  </td>
+  <td>
+    <mat-form-field floatLabel="never">
+      <input matInput
+             placeholder="Value"
+             formControlName="value"
+             type="number"
+             [min]="minPrice">
+      <span matPrefix>{{adjustment.isPositive? '' : '-' }}$&nbsp;</span>
+      <mat-error *ngIf="adjustmentForm.controls['value'].hasError('required')">
+        Field is <strong>required</strong>
+      </mat-error>
+      <mat-error *ngIf="adjustmentForm.controls['value'].hasError('min')">
+        Must be positive
+      </mat-error>
+    </mat-form-field>
+  </td>
+  <td></td>
+  <td></td>
+  <td>
+    <strong>{{adjustment.isPositive?'':'-'}}{{adjustment.value | money}}</strong>
+  </td>
+  <td>
+    <button type="button" *ngIf="canBeSaved" mat-icon-button (click)="remove(adjustment)">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </td>
+</ng-container>

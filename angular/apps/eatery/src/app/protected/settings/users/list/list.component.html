@@ -1,0 +1,85 @@
+<div class="container">
+
+  <header class="container__header">
+    <fr-header>Users</fr-header>
+  </header>
+
+  <main class="container__main">
+
+    <fr-users-list-filter [filter]="filter$ | async" (changed)="setFilter($event)"></fr-users-list-filter>
+
+    <mat-progress-bar *ngIf="isLoading$ | async; else list" mode="indeterminate"></mat-progress-bar>
+    <h2 *ngIf="loadError$ | async" class="text-center">Some error occurred during fetch of users</h2>
+
+    <ng-template #list>
+      <ng-container *ngIf="users$ | async as users">
+        <div class="table-wrapper">
+          <table *ngIf="users.length; else noItems" class="table table--simple">
+            <thead>
+            <tr>
+              <td>User</td>
+              <td>Email</td>
+              <td>Role</td>
+              <td *ngIf="(isActivePositionOrganization$ | async)">Outlet</td>
+              <td>Status</td>
+              <td>Action</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let permission of users; trackBy: trackByFn()" class="table__input-line">
+              <td>
+                <!--<a [routerLink]="['/users/', permission.id]">{{permission.displayName}}</a>-->
+                {{permission.displayName}}
+              </td>
+              <td>{{permission.email}}</td>
+              <td>
+                <mat-form-field floatLabel="never">
+                  <mat-select [value]="permission.role" (change)="onRoleChange(permission, $event.value)"
+                              [disabled]="!(canBeModified$ | async) || permission.role == 'owner'"
+                              placeholder="Select role">
+                    <mat-option *ngFor="let role of getRoles(permission.role); trackBy: trackByFn()"
+                                [value]="role.slug">
+                      {{role.title}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+
+              <td>
+                <button *ngIf="!(['owner', 'admin'].includes(permission.role))" [disabled]="!(canBeModified$ | async)"
+                  class="button button--sm button--primary"
+                        type="button" (click)="selectLocations(permission)">
+                  <mat-icon>store_mall_directory</mat-icon>
+                  <mat-icon>check</mat-icon>
+                </button>
+              </td>
+              <td>
+                {{permission.confirmedAt ? 'Confirmed' : 'Pending'}}<br/>
+                {{(permission.confirmedAt ? permission.confirmedAt : permission.invitedAt) | date : 'dd MMM yyyy'}}
+              </td>
+              <td>
+                <button [disabled]="!(canBeModified$ | async)" mat-icon-button type="button"
+                        (click)="remove(permission)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #noItems>
+          <div *ngIf="isFilterUsed$ | async; else messageForNoItemsAtAll">
+            <hr/>
+            <h3 class="text-center m-b-0">No results for your filter. Try other options</h3>
+          </div>
+          <ng-template #messageForNoItemsAtAll>
+            <hr/>
+            <h3 class="text-center m-b-0">No users yet. <a routerLink="/users/create">Create first one</a></h3>
+          </ng-template>
+        </ng-template>
+      </ng-container>
+    </ng-template>
+  </main>
+
+</div>

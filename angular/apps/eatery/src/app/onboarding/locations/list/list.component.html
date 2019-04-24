@@ -1,0 +1,100 @@
+<mat-card>
+  <header class="container__header">
+    <div class="container__header__top-row">
+      <img src="assets/logo-black.svg"/>
+      <fr-profile></fr-profile>
+    </div>
+
+    <h2>MANAGE LOCATIONS</h2>
+    <p>You can add more locations, delete or edit your locations here.</p>
+  </header>
+
+  <main class="container__main">
+
+    <div *ngIf="(locations$ | async).length"
+         class="flex-row flex-row--grid flex-x-align-center flex-x-justify-space-between">
+      <div class="flex-col flex-col--grid">
+        <div class="button-wrapper">
+          <button mat-button
+                  type="button"
+                  href="javascript:;" (click)="create()"
+                  class="button--add">
+            <mat-icon>add</mat-icon>
+            <span>Add location</span>
+          </button>
+        </div>
+      </div>
+      <div class="flex-col flex-col--grid text-right">
+        <a routerLink="/">Go to Admin Dashboard</a>
+      </div>
+    </div>
+
+    <mat-progress-bar *ngIf="isLoading$ | async; else list" mode="indeterminate"></mat-progress-bar>
+    <h2 *ngIf="loadError$ | async" class="text-center">Some error occurred during fetch of locations</h2>
+
+    <ng-template #list>
+      <ng-container *ngIf="locations$ | async as locations">
+        <div class="table-wrapper">
+          <table *ngIf="locations.length; else noItems" class="table table--simple">
+            <thead>
+            <tr>
+              <td>Name</td>
+              <td>Code</td>
+              <td>Users</td>
+              <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let location of locations; trackBy: trackByFn()">
+              <td>{{location.name}}
+                <div class="non-wrap">{{location.address}}</div>
+              </td>
+              <td>{{location.code}}</td>
+              <td>{{location.availableForUsers.length}}</td>
+              <td style="text-align: right">
+                <button type="button" mat-icon-button [matMenuTriggerFor]="locationMenu" disableRipple>
+                  <mat-icon>more_horiz</mat-icon>
+                </button>
+                <mat-menu #locationMenu="matMenu" xPosition="before">
+                  <ng-template matMenuContent>
+                    <button type="button" mat-menu-item (click)="select(location)">
+                      <mat-icon>dashboard</mat-icon>
+                      <span>Go to Dashboard</span>
+                    </button>
+                    <button type="button" mat-menu-item (click)="edit(location.id)">
+                      <mat-icon>edit</mat-icon>
+                      <span>Edit</span>
+                    </button>
+                    <button type="button" mat-menu-item
+                            *ngIf="canBeDeleted(location)"
+                            (click)="remove(location)">
+                      <mat-icon>delete</mat-icon>
+                      <span>Delete</span>
+                    </button>
+                    <button type="button" mat-menu-item
+                            *ngIf="canBeRestored(location)"
+                            (click)="restore(location)">
+                      <mat-icon>undo</mat-icon>
+                      <span>Restore</span>
+                    </button>
+                  </ng-template>
+                </mat-menu>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #noItems>
+          <hr/>
+          <h3 class="text-center m-b-0">No locations yet.
+            <a href="javascript:" (click)="create()">Create first one</a></h3>
+        </ng-template>
+
+      </ng-container>
+    </ng-template>
+
+  </main>
+
+</mat-card>
+

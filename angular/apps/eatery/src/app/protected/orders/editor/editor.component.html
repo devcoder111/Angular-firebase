@@ -1,0 +1,118 @@
+<div class="container">
+
+  <header class="container__header">
+    <fr-header>
+      <div class="flex-row flex-x--center">
+        <ng-container *ngIf="order$ | async as order">
+          <span *ngIf="isNew$ | async; else displayNumber">Create Order</span>
+          <ng-template #displayNumber>
+            <span>{{order.number ? 'Order No. '+order.number : 'Generating number...'}}</span>
+          </ng-template>
+          <span class="status-label {{'status-label--' + order.status}}">
+            {{order.status | orderStatusTitleBySlug}}
+          </span>
+          <span *ngIf="order.isDeleted" class="status-label status-label--deleted">
+            Deleted
+          </span>
+        </ng-container>
+      </div>
+    </fr-header>
+  </header>
+
+  <main class="container__main">
+
+    <mat-progress-bar *ngIf="isLoadingOrder$ | async" mode="indeterminate"></mat-progress-bar>
+
+    <h2 *ngIf="loadOrderError$ | async" class="text-center">
+      Some error occurred during fetch of the order
+    </h2>
+
+    <div>
+      <ng-container *ngIf="order$ | async as order">
+        <fr-orders-editor-form [order]="order"
+                               [isReadOnly]="(isReadOnly$ | async)
+                                          || !(canBeSaved$ | async)"
+                               [products]="(products$ | async)"
+                               [location]="(location$ | async)"
+                               [supplier]="(supplier$ | async)"
+                               [isLoadingProducts]="isLoadingProducts$ | async"
+                               [loadProductsError]="loadProductsError$ | async"
+                               (changed)="patchOrder($event)"
+                               (supplierChanged)="patchSupplier($event)"
+                               (productsChanged)="setProducts($event)"
+        ></fr-orders-editor-form>
+      </ng-container>
+    </div>
+
+  </main>
+
+  <footer class="container__footer">
+    <div class="container__footer__actions">
+      <div class="button-wrapper">
+        <button mat-button
+                color="transparent"
+                type="button"
+                (click)="cancel()">
+          {{!(canBeModified$ | async) ? 'Back to list' : 'CANCEL'}}
+        </button>
+        <button *ngIf="isSaving$ | async"
+                mat-button
+                color="transparent"
+                type="button"
+                disabled>
+          SAVING...
+        </button>
+        <ng-container *ngIf="!(isSaving$ | async)">
+          <ng-container *ngIf="order$ | async as order">
+            <button *ngIf="canBeUndeleted$ | async"
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="markAsDraft(order)">
+              RETURN TO DRAFT
+            </button>
+            <button *ngIf="canBeDeleted$ | async"
+                    mat-button
+                    color="warn"
+                    type="button"
+                    (click)="remove(order)">
+              DELETE
+            </button>
+            <button *ngIf="canBeVoided$ | async"
+                    mat-button
+                    color="warn"
+                    type="button"
+                    (click)="voidOrder(order)">
+              VOID
+            </button>
+            <button *ngIf="canBeSaved$ | async"
+                    mat-button
+                    (click)="saveAsDraft()"
+                    color="transparent"
+                    type="button"
+                    [disabled]="!(isSaveEnabled$ | async)">
+              SAVE AS DRAFT
+            </button>
+            <button *ngIf="canBeSaved$ | async"
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="send(false)"
+                    [disabled]="!(isSendEnabled$ | async)">
+              SEND
+            </button>
+            <button *ngIf="canBeSaved$ | async"
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="send(true)"
+                    [disabled]="!(isSendEnabled$ | async)">
+              SEND & NEW
+            </button>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </footer>
+
+</div>

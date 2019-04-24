@@ -1,0 +1,23 @@
+match /permissions/{id} {
+  allow get: if canGetPermission(getDoc());
+  allow list: if canListPermission(getDoc());
+  allow create: if isAuthenticated(); //TODO create perm on server, check that user create perm not for himself
+  allow update: if canUpdatePermission(getDoc());
+  allow delete: if canDeletePermission(getDoc());
+}
+
+function canGetPermission(doc) {
+  return doc.userId == getAuth().uid || doesUserHaveAdminAccessToOrganization(doc.organizationId);
+}
+
+function canListPermission(doc) {
+  return canGetPermission(doc) && reqLimitForList();
+}
+
+function canUpdatePermission(doc) {
+  return doesUserHaveAdminAccessToOrganization(doc.organizationId);
+}
+
+function canDeletePermission(doc) {
+  return doesUserHaveAdminAccessToOrganization(doc.organizationId);
+}

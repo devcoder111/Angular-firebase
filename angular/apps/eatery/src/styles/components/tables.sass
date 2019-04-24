@@ -1,0 +1,75 @@
+.table-wrapper
+  overflow-x: auto
+  +border-top($colorCoolGray, !important)
+
+.table
+  border-collapse: collapse
+  font-size: $fontSizeS
+
+  a
+    color: #666
+
+    &:hover
+      color: #222
+
+  .mat-icon-button
+    margin: -13px !important
+
+  .mat-checkbox
+    border: none !important
+    height: auto
+    margin: 0 !important
+    padding: 0 !important
+
+    label
+      margin: -13px 0 !important
+
+  .mat-form-field
+    border: 1px solid #dddddd
+    border-radius: $globalBorderRadius
+    padding: 0 5px !important
+    margin: 0 0 0 0
+    background: #fff
+    min-width: 110px
+
+  &, tr, td
+    +no-border(!important)
+  tr
+    +border-top(#e6e6e6, !important)
+    background-color: #f4f3f4
+    &.table__total
+      +border-top(#a9a9a9, !important)
+      +border-bottom(#a9a9a9, !important)
+      background: $colorLightGray
+      padding-right: 16px
+      font-weight: 500
+  thead
+    font-weight: 500
+    tr
+      +no-border(!important)
+      background: inherit
+  td, th
+    +no-border
+    text-align: left
+    padding: 14px 10px
+
+  &--simple
+    width: 100%
+    td
+      .table__icon-image
+        max-height: 30px
+        max-width: 30px
+        margin: 0 0 5px 5px
+    tbody
+      background-color: $colorLightGray
+      color: $colorSlateGrey
+      tr
+        +border-top(#ddd)
+        &.table__input-line td
+          padding: 5px 10px
+      td.table__select
+        width: 20px
+        input, mat-checkbox
+          min-width: 18px
+          height: 18px
+          opacity: .8

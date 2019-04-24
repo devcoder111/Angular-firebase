@@ -1,0 +1,9 @@
+<mat-card>
+  <img src="assets/logo-black.svg"/>
+      <div class="text-center">
+        <h4>{{authError$ | async}}</h4>
+        <button type="button" mat-raised-button color="primary" (click)="tryAgain()">
+          Sing in
+        </button>
+      </div>
+</mat-card>

@@ -1,0 +1,165 @@
+// hierarchy
+// 
+// .cdk-overlay-container
+//   .cdk-global-overlay-wrapper
+//     .cdk-overlay-pane 
+//       mat-dialog-container.mat-dialog-container
+//         fr-entity-selector-dialog
+//           .dialog
+//             .search-box.mat-dialog-title
+//             .items
+//               mat-dialog-content
+//               .items__counter
+//               mat-dialog-actions
+//                 .button-wrapper
+//                   .mat-transparent
+//                   .mat-primary
+
+
+.mat-dialog-title
+  padding: 40px
+  text-align: center
+
+.mat-card
+  z-index: 1
+  border-top: 1px solid #e8e8e8
+  box-shadow: 0 0px 1px 0px rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.1), 0 3px 5px 0 rgba(0,0,0,.1) !important
+
+// modal / popover / overlay which covers whole screen
+.cdk-global-overlay-wrapper 
+  background: rgba(0,0,0,0.75)
+
+  .cdk-overlay-pane 
+    position: relative !important
+    border-radius: 5px
+    overflow: hidden
+    max-width: 90vw !important
+
+  .mat-form-field
+    margin: 0px 0px 15px 0px !important
+
+  .mat-dialog-container
+    padding: 0px !important
+    height: auto
+    overflow: hidden
+  
+  .dialog__title
+    padding: 15px 15px 10px 15px !important
+    background: #fafafa
+    margin: 0px
+
+  .search-box 
+    padding: 5px 15px 0px 15px !important
+    background: #fafafa
+    margin: 0px -5px !important
+    border-bottom: 1px solid #e8e8e8
+    border-top: 1px solid #e8e8e8
+    background: #fdfdfd
+
+  .mat-form-field
+    margin: 0px 0px 5px 0px !important
+    border: none !important
+    box-shadow: none !important
+
+  .items
+    &__amount-selector
+      padding: 10px 15px !important
+      height: auto !important
+
+    .mat-checkbox
+      border: none !important
+      padding: 0px !important
+      height: auto
+      margin: 0px !important
+      width: auto
+
+      label
+        padding: 0px
+      
+    &__counter
+      width: 100%
+      background: #fafafa
+      color: #9c9c9c !important
+      margin: 0px
+      box-sizing:  border-box
+      padding: 10px 15px !important
+      border-top: 1px solid #ccc
+      height: auto
+
+  .dialog
+    display: flex
+    flex-direction: column
+
+    &__actions 
+      width:  100%
+      background: #fafafa
+      border: none
+      padding: 0px 15px 20px 15px
+      box-sizing: border-box
+
+    .button-wrapper
+      display: flex;
+      margin: 0px;
+      width: 100%
+      
+    button.mat-button
+      box-sizing: border-box
+      width: 100% !important
+      margin: 0px 5px !important
+
+        
+  .mat-dialog-content 
+    margin-bottom: 100px !important
+    box-sizing: border-box
+    width: 100%
+    margin: 0px !important
+    padding: 0px
+
+
+
+// dropdown / overlay attached to a input
+.fr-dropdown
+  border-radius: 0px 0px 5px 5px !important
+  position: relative
+  overflow: hidden
+
+  .search-box 
+    padding: 5px 15px 0px 15px !important
+    background: #fafafa
+    margin: 0px -5px !important
+    border-bottom: 1px solid #ccc
+  
+  .mat-form-field
+    margin: 0px 0px 10px 0px !important
+    border: none !important
+    box-shadow: none !important
+  
+  .dialog__actions 
+    width: 100%
+    background: #fafafa
+    border: none
+    margin: 0px
+    padding: 15px 0px !important
+    border-top: 1px solid #ccc
+    box-sizing: border-box
+
+  .mat-dialog-content 
+    margin-bottom: 100px !important
+    box-sizing: border-box
+    width: 100%
+    margin: 0px
+    padding: 0px
+
+  .items
+    margin-bottom: 50px !important
+
+    &__item
+      border-bottom: 1px solid #eee
+      color: #555
+
+
+.mat-select-panel
+  border-radius: 5px
+  min-width: unset !important
+  width: calc(100% + 20px) !important
+  margin: 1px 5px

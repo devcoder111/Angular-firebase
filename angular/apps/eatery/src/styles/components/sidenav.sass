@@ -1,0 +1,80 @@
+mat-sidenav-container
+  height: 100%
+  position: absolute !important
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  mat-sidenav
+    width: $sidenavWidth
+    background-color: $sidenavBackground !important
+    height: 100%
+    display: flex !important
+    flex-direction: column
+    align-items: stretch
+    justify-content: flex-start
+    .menu
+      flex: 1 0 100px
+      mat-nav-list
+        .mat-list-item
+          color: $colorCoolGray
+          span
+            margin-left: 10px
+            font-size: 13px
+            font-weight: bold
+          &--special
+            box-shadow: 0 -1px 0 0 rgba(225, 222, 222, 0.5)
+            border-left: 3px solid #f8ca24
+            color: white
+          &--active
+            background-color: #5d5e65 !important
+          &--inactive
+            color: darken($colorCoolGray, 40%)
+          &--sub-item
+            padding-left: 20px
+
+    hr
+      margin-top: 20px
+      margin-bottom: -5px
+
+  mat-sidenav-content
+    .content-wrapper
+      flex: 1
+      display: flex
+      align-self: center
+      flex-direction: column
+      overflow-y: auto
+      box-sizing: border-box
+      width: 100%
+      @media screen and (max-width: 600px)
+        padding: 10px
+      @media screen and (min-width: 600px)
+        padding: 10px 12% 10px 12%
+      //@media screen and (min-width: 1200px)
+      //  padding: 10px 25% 10px 25%
+      @media screen and (min-width: 1800px)
+        padding: 10px 30% 10px 30%
+      &--no-initial-padding
+        @media screen and (max-width: 600px)
+          padding: 0
+      &--padding-bottom-for-fab-button
+        padding-bottom: 76px
+      > mat-list
+        @media screen and (min-width: 600px)
+          padding-top: 0
+          box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12)
+
+//dropdown on the left side
+fr-organization-location-selector
+  .mat-form-field
+    border: none
+    padding: 5px 10px !important
+    width: calc(100% + 12px)
+    margin: 0 -15px !important
+
+    &:hover
+      border: none
+
+    &-should-float .mat-form-field-infix
+      margin: 0 !important
+

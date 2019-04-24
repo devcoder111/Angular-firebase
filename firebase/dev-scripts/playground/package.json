@@ -1,0 +1,17 @@
+{
+  "name": "playground",
+  "scripts": {
+    "lint": "tslint --project tsconfig.json",
+    "build": "tsc",
+    "start": "yarn && yarn build && node dist/firebase/dev-scripts/playground/src/index.js"
+  },
+  "main": "dist/firebase/dev-scripts/fillFirebaseWithDemoData/src/index.js",
+  "dependencies": {
+    "firebase-admin": "^6.0.0"
+  },
+  "devDependencies": {
+    "tslint": "^5.11.0",
+    "typescript": "^2.9.2"
+  },
+  "private": true
+}

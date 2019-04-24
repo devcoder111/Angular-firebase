@@ -1,0 +1,12 @@
+{
+  "name": "firestore-indexes",
+  "version": "1.0.0",
+  "description": "Build & unit-tests for firestore indexes",
+  "main": "build.js",
+  "author": "Anton Shubin <2spy4x@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "node build.js"
+  }
+}

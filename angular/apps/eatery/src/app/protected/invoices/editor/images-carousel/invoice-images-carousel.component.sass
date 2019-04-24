@@ -1,0 +1,67 @@
+fr-invoice-images-carousel
+  .button-file
+    position: relative
+
+  .dropzone
+    cursor: pointer
+    position: relative
+    width: 100%
+    height: 60vh
+    background-color: #f6f6f6
+    border: 2px dashed #959595
+
+    &__file
+      width: 100%
+      height: 60vh
+      position: absolute
+      top: 0
+      left: 0
+      opacity: 0
+      z-index: 1
+      cursor: pointer
+
+    &__file-button
+      width: 100%
+      height: 42px
+      position: absolute
+      top: 0
+      left: 0
+      opacity: 0
+      z-index: 1
+      cursor: pointer
+
+    &__text
+      width: 100%
+      height: 140px
+      z-index: 0
+      position: absolute
+      top: 0
+      left: 0
+      display: flex
+      flex-direction: column
+      align-items: center
+      justify-content: center
+
+      &__description, &__before-button
+        padding: 0 16px
+        text-align: center
+
+      &__before-button
+        margin-top: 0
+
+  .carousel
+    display: flex
+    flex-wrap: wrap
+    margin: 0 30px
+    .carousel-item
+      flex-grow: 1
+      max-width: 33%
+      img
+        max-width: 100%
+    .carousel-button
+      position: absolute
+      top: 50%
+      &__prev
+        left: 0
+      &__next
+        right: 0

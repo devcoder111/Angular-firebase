@@ -1,0 +1,93 @@
+// More info about security rules:
+// 0. Intro - https://angularfirebase.com/lessons/firestore-security-rules-guide/
+// 1. Get started - https://firebase.google.com/docs/firestore/security/get-started
+// 2. Basics pt.1 - https://firebase.google.com/docs/firestore/security/rules-structure
+// 3. Basics pt.2 - https://firebase.google.com/docs/firestore/security/rules-conditions
+// 4. Securing transactions and batches  - https://firebase.google.com/docs/firestore/manage-data/transactions#security_rules_limits
+// 5. Documentation - Request - https://firebase.google.com/docs/reference/rules/rules.firestore.Request
+// 6. Documentation - Resource - https://firebase.google.com/docs/reference/rules/rules.firestore.Resource
+// 7. Documentation - Everything else - https://firebase.google.com/docs/reference/rules/
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // HELPERS - START
+    function getDoc() {
+      // Returns existing document data
+      return resource.data
+    }
+    function getDocInc() {
+      // Returns incoming document data (for create & update operations)
+      return request.resource.data
+    }
+    function getAuth() {
+      return request.auth
+    }
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isUser(userId) {
+      return request.auth.uid == userId;
+    }
+    function frGet(path) {
+      return get(/databases/$(database)/documents/$(path)).data;
+    }
+    function frGetAfter(path) {
+      return getAfter(/databases/$(database)/documents/$(path)).data;
+    }
+    function frExists(path) {
+      return exists(/databases/$(database)/documents/$(path));
+    }
+
+    function isCreatedAtValid(entity) {
+      return entity.createdAt is timestamp// && entity.createdAt <= request.time;
+    }
+    function isCreatedByValid(entity) {
+      return entity.createdBy is string && entity.createdBy == getAuth().uid;
+    }
+
+    function reqLimitForList() {
+      return request.query.limit <= 20
+    }
+    // HELPERS - END
+
+    // USER ACCESS FUNCTIONS - START
+    function isUserInOrganization(organizationId) {
+      return frExists(/permissions/$(getAuth().uid + '_' + organizationId));
+    }
+    function getUserRoleInOrganization(organizationId) {
+      return frGet(/permissions/$(getAuth().uid + '_' + organizationId)).role;
+    }
+    function doesUserHasRoleInOrganization(organizationId, role) {
+      return getUserRoleInOrganization(organizationId) == role;
+    }
+    function doesUserHaveAdminAccessToOrganization(organizationId) {
+      return doesUserHasRoleInOrganization(organizationId, 'owner')
+      || doesUserHasRoleInOrganization(organizationId, 'admin')
+    }
+
+    function isUserInLocation(organizationId, locationId) {
+      return frGet(/permissions/$(getAuth().uid + '_' + organizationId)).byLocations.hasAny([locationId])
+    }
+    function isLocationInsideOrganization(organizationId, locationId) {
+      return organizationId == frGet(/locations/$(locationId)).organizationId
+    }
+    function doesUserHasAccessToLocation(organizationId, locationId) {
+      return isLocationInsideOrganization(organizationId, locationId)
+      && doesUserHaveAdminAccessToOrganization(organizationId)
+      || (doesUserHasRoleInOrganization(organizationId, 'user') && isUserInLocation(organizationId, locationId))
+    }
+
+    function doesUserHasAccessToOrganizationOrLocation(organizationId, locationId) {
+      return doesUserHaveAdminAccessToOrganization(organizationId)
+      || doesUserHasAccessToLocation(organizationId, locationId)
+    }
+    // USER ACCESS FUNCTIONS - END
+
+#PLACEHOLDER#
+
+  }
+}
+
+
+

@@ -1,0 +1,14 @@
+{
+  "name": "firestore",
+  "version": "1.0.0",
+  "description": "Build & unit-tests for Firestore",
+  "author": "Anton Shubin <2spy4x@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "yarn --cwd \"indexes\" build && yarn --cwd \"rules\" build",
+    "install-all": "yarn --cwd \"indexes\" && yarn --cwd \"rules\"",
+    "test": "yarn test:rules",
+    "test:rules": "yarn --cwd \"rules\" test"
+  }
+}

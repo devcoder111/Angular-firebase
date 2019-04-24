@@ -1,0 +1,130 @@
+<mat-card>
+  <img src="assets/logo-black.svg"/>
+  <div [ngSwitch]="authState$ | async">
+    <div *ngSwitchCase="AuthState.notAuthenticated" class="flex-row flex-row--grid">
+      <div class="flex-col flex-col--grid">
+        <h1 class="bold-caption">NEW SIGN UP</h1>
+        <p>Already have an account?<br/>Please <a routerLink="/onboarding">Sign In</a>
+        </p>
+      </div>
+      <div [ngSwitch]="authState$ | async" class="flex-col flex-col--grid">
+        <ng-container>
+          <form [formGroup]="form" novalidate id="form">
+            <mat-form-field>
+              <input matInput formControlName="displayName" (keyup.enter)="signUp()" placeholder="Full name">
+              <mat-error *ngIf="form.controls['displayName'].hasError('required')">
+                Field is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-select placeholder="Job title" formControlName="jobTitle">
+                <mat-option *ngFor="let title of jobTitles" [value]="title">{{title}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.controls['jobTitle'].hasError('required')">
+                Field is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input matInput
+                     type="email"
+                     formControlName="email"
+                     (keyup.enter)="signUp()"
+                     placeholder="Email address">
+              <mat-error *ngIf="form.controls['email'].hasError('required')">
+                Field is <strong>required</strong>
+              </mat-error>
+              <mat-error *ngIf="form.controls['email'].hasError('pattern')">
+                Should be valid email.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input matInput type="password" formControlName="password" (keyup.enter)="signUp()"
+                     placeholder="Password (At least 8 characters)">
+              <mat-error *ngIf="form.controls['password'].hasError('required')">
+                Field is <strong>required</strong>
+              </mat-error>
+              <mat-error *ngIf="form.controls['password'].hasError('minlength')">
+                The password should be at least 8 characters
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input matInput
+                     type="password"
+                     formControlName="confirmPassword"
+                     (keyup.enter)="signUp()"
+                     placeholder="Confirm Password (At least 8 characters)">
+              <mat-error *ngIf="form.controls['confirmPassword'].hasError('required')">
+                Field is <strong>required</strong>
+              </mat-error>
+              <mat-error *ngIf="form.controls['confirmPassword'].hasError('matchPassword')">
+                Passwords must identical
+              </mat-error>
+            </mat-form-field>
+
+            <button type="button" mat-button color="primary" (click)="signUp()" [disabled]="form.invalid">SIGN UP
+            </button>
+            <p>
+              <mat-error *ngIf="authError$ | async as authError">
+                {{authError}}
+              </mat-error>
+            </p>
+
+            <mat-checkbox formControlName="confirmTermsAndPrivacy">
+            By signing in, you accept the<br/><a routerLink="/public/privacy" target="_blank">Privacy Policy</a> &
+              <a routerLink="/public/terms" target="_blank">Terms</a>
+            </mat-checkbox>
+            <mat-error *ngIf="form.controls['confirmTermsAndPrivacy'].hasError('requaredTrue')">
+              Must to accept terms and privacy policy
+            </mat-error>
+          </form>
+        </ng-container>
+
+      </div>
+    </div>
+
+    <ng-container *ngSwitchCase="AuthState.waitingForEmailVerification">
+      <h4>Check your email. We sent you an enter link.</h4>
+      <button type="button" mat-raised-button color="primary" (click)="tryAgain()">
+        Cancel
+      </button>
+
+      <button type="button" class="pull-right" mat-raised-button color="accent"
+              (click)="resendEmailVerification()"
+              [disabled]="(secondsToResendEmail$ | async)>0">
+        <ng-container *ngIf="secondsToResendEmail$ | async as timerResend; else noTimer"> Email sent. Your can resend
+          email again in {{timerResend}}...
+        </ng-container>
+        <ng-template #noTimer> Resend email verification</ng-template>
+      </button>
+
+    </ng-container>
+
+    <ng-container *ngSwitchCase="AuthState.authenticationError">
+      <div class="text-center">
+        <h4>{{authError$ | async}}</h4>
+        <button type="button" mat-raised-button color="primary" (click)="tryAgain()">
+          Try again
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="AuthState.authenticationInfo">
+      <div class="text-center">
+        <h4>{{authError$ | async}}</h4>
+        <button type="button" mat-raised-button color="primary" (click)="goSingIn()">
+          Sing in
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchDefault>
+      <h4>
+        Redirecting...
+      </h4>
+    </ng-container>
+  </div>
+</mat-card>

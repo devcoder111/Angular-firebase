@@ -1,0 +1,167 @@
+@import ../../../../styles/variables
+
+fr-invoices-upload
+  .dropzone
+    cursor: pointer
+    position: relative
+    width: 100%
+    background-color: #f6f6f6
+    border: 2px dashed #959595
+
+    &__file-input
+      position: absolute
+      width: 100%
+      height: 100%
+      top: 0
+      left: 0
+      right: 0
+      bottom: 0
+      opacity: 0
+      z-index: 1
+      cursor: pointer
+
+    &__text
+      z-index: 0
+      padding: 15px
+      display: flex
+      flex-direction: column
+      align-items: center
+      justify-content: center
+      &__description, &__button
+        padding: 0 16px
+        text-align: center
+      &__button__before-button
+        margin-top: 0
+        margin-right: 16px
+
+    &__hint-on-drag
+      display: none
+
+    // on file drag BEGIN
+    @at-root
+      body.on-file-dragged
+        .mat-drawer-content
+          z-index: auto
+
+    body.on-file-dragged &
+      position: fixed
+      height: 100%
+      border: none
+      background-color: rgba(0, 0, 0, .5)
+      left: 0
+      top: 0
+      z-index: 5
+      display: flex
+
+      &__text
+        display: none
+
+      &__hint-on-drag
+        display: flex
+        color: white
+        font-size: 3rem
+        text-align: center
+        background-color: rgba(100, 255, 141, 0.34)
+        border: 2px dashed #0cf94b
+        pointer-events: none
+        align-items: center
+        justify-content: center
+        width: 100%
+        height: 100%
+  // on file drag END
+
+  .upload-list
+    padding-top: 16px
+    body.on-file-dragged &
+      opacity: 0.3
+
+    &__file
+      min-width: 24%
+      max-width: calc(33% - 30px)
+      flex-basis: 0
+      @media (min-width: 768px)
+        min-width: 15%
+        max-width: calc(20% - 30px)
+      @media (max-width: 319px)
+        min-width: 40%
+        max-width: calc(100% - 30px)
+      @media (min-width: 320px) and (max-width: 539px)
+        min-width: 33%
+        max-width: calc(50% - 30px)
+
+      &__preview
+        border: 1px solid #cccccc
+        background: #eee
+        padding-top: 142%
+        position: relative
+        color: #3a3c47
+        background:
+          position: center
+          size: cover
+
+        &__info
+          text-align: center
+          position: absolute
+          bottom: 0
+          left: 0
+          width: 100%
+          box-sizing: border-box
+          padding: 10px
+          z-index: 5
+          font-size: 12px
+          font-weight: bold
+          background: rgba(255, 255, 255, 0.9)
+
+          .mat-progress-bar
+            border-radius: 3px
+
+            .mat-progress-bar-fill::after
+              background-color: $colorCoolGreen
+
+      &__size
+        color: #5d5e65
+        background: #fafafa !important
+
+        p
+          text-align: center
+
+    &__file--completed
+
+      .upload-list__file__preview
+      border-color: $colorCoolGreen
+
+      &__info
+        background: transparent
+
+    &__file--error
+
+      .upload-list__file__preview
+      border-color: $colorFadedRed
+      background-color: #fbeeee
+      color: $colorFadedRed
+
+  .popup-message
+    position: absolute
+    background-color: #e4cd8a
+    color: rgba(0, 0, 0, 0.5)
+    bottom: 0
+    display: flex
+    justify-content: space-between
+    z-index: 5
+    margin: 0 auto
+    left: 0
+    right: 0
+    width: 100%
+
+    a
+      color: #fff
+
+    &__inner
+      margin-left: 1.5rem
+
+      &__link
+        text-decoration: underline
+        cursor: pointer
+
+    &__close
+      margin: 0 .5rem !important

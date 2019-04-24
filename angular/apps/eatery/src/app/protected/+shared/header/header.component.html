@@ -1,0 +1,18 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <button type="button" mat-icon-button (click)="toggleMenu()">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <div class="content">
+      <ng-content></ng-content>
+    </div>
+
+    <span class="spacer"></span>
+
+    <button type="button" mat-icon-button (click)="showFeatureNotImplementedYetMessage()">
+      <mat-icon>notifications_none</mat-icon>
+    </button>
+    <fr-profile></fr-profile>
+  </mat-toolbar-row>
+</mat-toolbar>

@@ -1,0 +1,4 @@
+match /invoiceAdjustmentTypes/{id} {
+  allow get: if isAuthenticated()
+  allow list: if isAuthenticated()
+}

@@ -1,0 +1,3 @@
+match /suppliers/{id} {
+  allow read, write: if isAuthenticated() // TODO: implement
+}

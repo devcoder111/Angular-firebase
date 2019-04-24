@@ -1,0 +1,60 @@
+<div class="container">
+
+  <header class="container__header">
+    <fr-header>Suppliers</fr-header>
+  </header>
+
+  <main class="container__main">
+
+    <fr-suppliers-list-filter [filter]="filter$ | async" (changed)="setFilter($event)"></fr-suppliers-list-filter>
+
+    <mat-progress-bar *ngIf="isLoading$ | async; else list" mode="indeterminate"></mat-progress-bar>
+    <h2 *ngIf="loadError$ | async" class="text-center">Some error occurred during fetch of suppliers</h2>
+
+    <ng-template #list>
+      <ng-container *ngIf="suppliers$ | async as suppliers">
+        <div class="table-wrapper">
+          <table *ngIf="suppliers.length; else noItems" class="table table--simple">
+            <thead>
+            <tr>
+              <td *ngIf="(isActivePositionOrganization$ | async)">Location Control</td>
+              <td>Supplier Name</td>
+              <td>Ordering Method</td>
+              <td>Order Spent</td>
+              <td>Invoice Spent</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let supplier of suppliers; trackBy: trackByFn()" class="table__input-line">
+              <td *ngIf="(isActivePositionOrganization$ | async)">
+                <button class="button button--sm button--primary" type="button" (click)="selectLocations(supplier)">
+                  <mat-icon>store_mall_directory</mat-icon>
+                  <mat-icon>check</mat-icon>
+                </button>
+              </td>
+              <td><a [routerLink]="['/suppliers/', supplier.id]">{{supplier.name}}</a></td>
+              <td>{{getOrderMethods(supplier)}}</td>
+              <td>$0000.00</td>
+              <td>$0000.00</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #noItems>
+          <div *ngIf="isFilterUsed$ | async; else messageForNoItemsAtAll">
+            <hr/>
+            <h3 class="text-center m-b-0">No results for your filter. Try other options</h3>
+          </div>
+          <ng-template #messageForNoItemsAtAll>
+              <hr/>
+              <h3 class="text-center m-b-0">No suppliers yet. <a *ngIf="(canBeModified$ | async)"
+                                                                 routerLink="/suppliers/create">Create first one</a>
+              </h3>
+          </ng-template>
+        </ng-template>
+      </ng-container>
+    </ng-template>
+  </main>
+
+</div>

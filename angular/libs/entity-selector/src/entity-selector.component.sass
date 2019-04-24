@@ -1,0 +1,52 @@
+fr-entity-selector-dialog
+  .search-box
+    padding: 15px 15px 0
+    margin-bottom: 0
+    font-size: 14px
+    &--with-title
+      padding-top: 0
+  .items
+    $items: &
+    &__item
+      padding: 15px
+      border-bottom: 1px solid #cccccc
+      &:last-child
+        border-bottom: none
+      &:hover
+        background-color: rgba(204, 204, 204, 0.2)
+
+    &__no-items-message
+      text-align: center
+    &__counter
+      padding: 0 15px
+      color: #cccccc
+
+    &--mode-single
+      & .items__item
+        cursor: pointer
+    &--mode-multiple
+      & .items__amount-selector
+        padding: 0 15px 10px
+        > *
+          margin-right: 5px
+        > a
+          text-decoration: none
+          color: inherit
+          &:hover
+            text-decoration: underline
+
+.cdk-overlay-dark-backdrop
+  background: inherit !important
+
+.fr-dropdown
+  box-shadow: 0 11px 15px -7px rgba(0,0,0,.2), 0 24px 38px 3px rgba(0,0,0,.14), 0 9px 46px 8px rgba(0,0,0,.12)
+  border-radius: 2px
+  background: #fff
+  .dialog
+    margin: 0
+    .items
+      max-height: 256px
+      overflow: auto
+    .mat-dialog-actions
+      padding: 12px 0
+      display: block

@@ -1,0 +1,45 @@
+<mat-progress-bar *ngIf="isLoadingCategory$ | async; else editor" mode="indeterminate"></mat-progress-bar>
+<h2 *ngIf="loadCategoryError$ | async" class="text-center">
+  Some error occurred during fetch of the category
+</h2>
+
+<ng-template #editor>
+  <ng-container *ngIf="productCategory$ | async">
+    <form [formGroup]="form"
+          novalidate
+          id="form">
+      <div class="table-wrapper">
+        <table class="table">
+          <tbody>
+          <tr>
+            <td>
+              <mat-form-field mat-line>
+                <input
+                  #input
+                  matInput
+                  formControlName="name"
+                  placeholder="Name"
+                  frAutofocus>
+                <mat-error *ngIf="form.controls['name'].hasError('required')"> Field is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </td>
+            <td class="button-container">
+              <button mat-icon-button
+                      *ngIf="!(isReadOnly$ | async)"
+                      [disabled]="!(isSaveEnabled$ | async) || (isSaving$ | async)"
+                      (click)="save()">
+                <mat-icon>check</mat-icon>
+              </button>
+              <button mat-icon-button
+                      (click)="cancel()">
+                <mat-icon>undo</mat-icon>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </form>
+  </ng-container>
+</ng-template>

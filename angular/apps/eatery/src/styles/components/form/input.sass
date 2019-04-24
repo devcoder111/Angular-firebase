@@ -1,0 +1,86 @@
+.mat-form-field
+  border: 1px solid #dddddd
+  border-radius: 5px
+  padding: 5px !important
+  height: 30px
+  margin: 0 0 30px 0
+  position: relative
+  display: block !important
+  width: auto
+
+  &:hover
+    border: 1px solid #bbbbbb
+
+  &-flex
+    align-items: unset !important
+
+  &-wrapper
+    height: 20px
+    position: unset
+
+  &-underline
+    display: none
+
+  &-infix
+    border: none
+  &-subscript-wrapper
+    position: absolute
+    left: 0
+    top: unset
+    height: 15px
+    bottom: -20px
+    width: 100%
+    overflow: visible !important
+
+  &-should-float .mat-form-field-infix
+    margin-top: 10px
+
+  &-label
+    color: #aaa !important
+    margin: 3px 0
+
+.mat-error
+  font-size: 11px
+
+.mat-focused
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, .05)
+  border: 1px solid #cccccc
+
+.mat-input-invalid
+  border: 1px solid #ef6060 !important
+
+.mat-focused.mat-input-invalid
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2)
+
+.mat-input-infix.mat-form-field-infix + .mat-input-suffix
+  border-left: 1px solid #dddddd
+  height: 40px
+  right: -5px
+  top: -5px
+  width: 45px
+  position: relative
+
+  //in the application, some icons are not default mat icons
+  //this is for those svg icons
+  svg
+    width: 30px
+    margin: 8px
+
+
+mat-form-field.textarea-wrapper
+  height: auto
+  min-height: 30px
+  margin: 0px 0px 30px 0px !important
+
+  textarea
+    min-height: 10px
+
+  .mat-input-wrapper
+    height: auto
+    padding: 0px
+
+  .mat-input-infix
+    padding-bottom: 0px
+
+  mat-error
+    padding: 7px 0px

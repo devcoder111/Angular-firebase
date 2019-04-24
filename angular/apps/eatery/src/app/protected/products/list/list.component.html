@@ -1,0 +1,76 @@
+<div class="container">
+
+  <header class="container__header">
+    <fr-header>Products</fr-header>
+  </header>
+
+  <main class="container__main">
+
+    <fr-products-list-filter [filter]="filter$ | async" (changed)="setFilter($event)"></fr-products-list-filter>
+
+    <mat-progress-bar *ngIf="isLoading$ | async; else list" mode="indeterminate"></mat-progress-bar>
+    <h2 *ngIf="loadError$ | async" class="text-center">Some error occurred during fetch of products</h2>
+
+    <ng-template #list>
+      <ng-container *ngIf="products$ | async as products">
+        <div class="table-wrapper">
+          <table *ngIf="products.length; else noItems" class="table table--simple">
+            <thead>
+            <tr>
+              <td *ngIf="(isActivePositionOrganization$ | async)">Location Control</td>
+              <td>Product Code & Name</td>
+              <td>Order Spent</td>
+              <td>Invoice Spent</td>
+              <td>Product Category</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let product of products; trackBy: trackByFn()" class="table__input-line">
+              <td *ngIf="(isActivePositionOrganization$ | async)">
+                <button class="button button--sm button--primary" type="button" (click)="selectLocations(product)">
+                  <mat-icon>store_mall_directory</mat-icon>
+                  <mat-icon>check</mat-icon>
+                </button>
+              </td>
+              <td>
+                <a [routerLink]="['/products/', product.id]">
+                  <p>{{product.nickname}}</p>
+                  <p>{{product.code}}</p>
+                  <p>{{product.name}}</p>
+                </a>
+              </td>
+              <td>$0000.00</td>
+              <td>$0000.00</td>
+              <td>
+                <mat-form-field floatLabel="never">
+                  <mat-select [value]="product.productCategoryId" (change)="onCategoryChange(product,$event.value)"
+                              placeholder="Select category">
+                    <mat-option
+                      *ngFor="let category of productCategories$ | async as productCategories; trackBy: trackByFn()"
+                      [value]="category.id">
+                      {{category.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #noItems>
+          <div *ngIf="isFilterUsed$ | async; else messageForNoItemsAtAll">
+            <hr/>
+            <h3 class="text-center m-b-0">No results for your filter. Try other options</h3>
+          </div>
+          <ng-template #messageForNoItemsAtAll>
+            <hr/>
+            <h3 class="text-center m-b-0">No products yet. <a *ngIf="(canBeModified$ | async)"
+                                                              routerLink="/products/create">Create first one</a></h3>
+          </ng-template>
+        </ng-template>
+      </ng-container>
+    </ng-template>
+  </main>
+
+</div>

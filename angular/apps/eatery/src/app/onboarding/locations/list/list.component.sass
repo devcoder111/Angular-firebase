@@ -1,0 +1,76 @@
+fr-locations-list
+  height: 100vh
+  display: flex
+  align-items: center
+  justify-content: center
+  mat-card
+    width: 600px
+    text-align: left
+
+  .container
+    &__header
+      text-align: center
+      padding: 0 0 15px 0
+      color: rgba(0, 0, 0, 0.75)
+
+      &__top-row
+        height: 60px
+        display: flex
+        align-items: center
+        justify-content: space-between
+    &__main
+      padding: 0
+
+  mat-checkbox.group-ungroup-toggle
+    margin: 0 !important
+    border: none !important
+    width: 95px
+
+    mat-checkbox-layout
+      width: auto !important
+      height: auto !important
+
+    svg, .mat-checkbox-background
+      display: none !important
+
+    .mat-checkbox-frame
+      position: relative !important
+      width: auto !important
+      height: auto !important
+
+    .mat-checkbox-frame:after
+      color: #65669f
+      content: "UNGROUP"
+      padding: 12px 10px 10px 10px
+      width: 60px
+      display: block
+      border: 1px solid #65669f
+      border-radius: 3px
+      font-size: 11px
+      text-align: center
+
+    &.mat-checkbox-checked
+      .mat-checkbox-frame:after
+        background: #65669f
+        content: "GROUP"
+        color: #ffffff
+
+    .mat-checkbox-inner-container
+      width: 20px
+      height: auto
+
+    .mat-checkbox-inner-container > *
+      width: auto
+      height: auto
+      border: none !important
+
+  .non-wrap
+    overflow: hidden
+    white-space: nowrap
+    text-overflow: ellipsis
+    max-width: 140px
+
+  span.badge
+    background: #ccc
+    padding: 2px 10px
+    border-radius: 2px

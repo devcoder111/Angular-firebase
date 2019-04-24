@@ -1,0 +1,63 @@
+<div class="container">
+
+  <header class="container__header">
+    <fr-header>
+      <div class="flex-row flex-x--center">
+        <ng-container *ngIf="product$ | async as product">
+          <span>{{(isNew$ | async) ? 'ADD PRODUCT' : product.name}}</span>
+        </ng-container>
+      </div>
+    </fr-header>
+  </header>
+
+  <main class="container__main">
+    <mat-progress-bar *ngIf="isLoadingProduct$ | async" mode="indeterminate"></mat-progress-bar>
+    <h2 *ngIf="loadProductError$ | async" class="text-center">
+      Some error occurred during fetch of the product
+    </h2>
+
+    <ng-container *ngIf="product$ | async as product">
+      <div class="flex-row m-b-1">
+        <fr-products-editor-form [state]="state$ | async"
+                                 [product]="product"
+                                 [isNew]="isNew$ | async"
+                                 [isReadOnly]="!(canBeModified$ | async)"
+                                 (changed)="patchProduct($event)"
+        ></fr-products-editor-form>
+      </div>
+
+      <h2 *ngIf="saveError$ | async" class="text-center">
+        Some error occurred during save of the product
+      </h2>
+    </ng-container>
+  </main>
+
+  <footer class="container__footer">
+    <div class="container__footer__actions">
+      <div class="button-wrapper">
+        <button mat-button
+                color=transparent
+                type="button"
+                (click)="cancel()">
+          {{!(canBeModified$ | async) ? 'Back to list' : 'CANCEL'}}
+        </button>
+        <button *ngIf="isSaving$ | async"
+                mat-button
+                color=transparent
+                type="button"
+                disabled>
+          SAVING...
+        </button>
+
+        <button *ngIf="(canBeSaved$ | async) && !(isSaving$ | async)"
+                mat-button
+                color="primary"
+                type="submit"
+                (click)="save()"
+                [disabled]="!(isSaveEnabled$ | async)">
+          SAVE
+        </button>
+      </div>
+    </div>
+  </footer>
+</div>

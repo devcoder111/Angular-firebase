@@ -1,0 +1,40 @@
+<div class="container">
+
+  <header class="container__header">
+    <fr-header>Dashboard</fr-header>
+  </header>
+
+  <main class="container__main">
+
+    <ngx-charts-bar-vertical
+      [view]="view"
+      [scheme]="colorScheme"
+      [results]="single"
+      [gradient]="gradient"
+      [xAxis]="showXAxis"
+      [yAxis]="showYAxis"
+      [legend]="showLegend"
+      [showXAxisLabel]="showXAxisLabel"
+      [showYAxisLabel]="showYAxisLabel"
+      [xAxisLabel]="xAxisLabel"
+      [yAxisLabel]="yAxisLabel"
+      (select)="onSelect($event)">
+    </ngx-charts-bar-vertical>
+
+    <ngx-charts-pie-chart
+      [view]="view2"
+      [scheme]="colorScheme2"
+      [results]="single2"
+      [legend]="showLegend2"
+      [explodeSlices]="explodeSlices2"
+      [labels]="showLabels2"
+      [doughnut]="doughnut2"
+      [gradient]="gradient2"
+      (select)="onSelect2($event)">
+    </ngx-charts-pie-chart>
+
+  </main>
+
+  <footer class="container__footer">
+  </footer>
+</div>

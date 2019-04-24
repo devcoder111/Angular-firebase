@@ -1,0 +1,130 @@
+<form [formGroup]="form"
+      novalidate
+      id="form"
+      class="flex-col">
+  <div class="flex-row">
+    <mat-form-field>
+      <input matInput
+             formControlName="number"
+             placeholder="Invoice No">
+      <mat-error *ngIf="form.controls['number'].hasError('required')">
+        Field is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="flex-row">
+    <mat-form-field>
+      <input matInput
+             formControlName="invoiceDate"
+             placeholder="Invoice date"
+             [matDatepicker]="picker">
+      <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="isReadOnly"></mat-datepicker-toggle>
+      <mat-datepicker #picker [disabled]="isReadOnly"></mat-datepicker>
+      <mat-error *ngIf="form.controls['invoiceDate'].hasError('required')">
+        Field is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div class="flex-row m-b-1">
+    <mat-form-field>
+      <fr-autocomplete-input formControlName="supplierId"
+                             [config]="selectSupplierConfig"
+                             [placeholder]="(invoice.supplierId ? '' : 'Select ') + 'Supplier'"></fr-autocomplete-input>
+      <mat-error *ngIf="!form.controls['supplierId'].hasError('required')">
+        Field is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="canBeSaved" class="button-wrapper">
+    <button [disabled]="!(isAddProductEnabled$ | async) || isReadOnly"
+            type="button"
+            mat-button
+            (click)="createProduct()"
+            class="button--add">
+      <mat-icon>add</mat-icon>
+      <span>* Add product</span>
+    </button>
+    <button type="button" [disabled]="!(isAddProductEnabled$ | async) || isReadOnly"
+            mat-button
+            (click)="createAdjustment()"
+            class="button--add">
+      <mat-icon>add</mat-icon>
+      <span>Add adjustment</span>
+    </button>
+  </div>
+
+  <h2 *ngIf="loadProductsError" class="text-center">
+    Some error occured during fetch of invoice products
+  </h2>
+  <h2 *ngIf="loadAdjustmentsError" class="text-center">
+    Some error occured during fetch of invoice adjustments
+  </h2>
+  <mat-progress-bar *ngIf="isLoadingProducts || isLoadingAdjustments; else productsTemplate"
+                    mode="indeterminate"></mat-progress-bar>
+
+  <ng-template #productsTemplate>
+    <div *ngIf="!(products.length || adjustments.length)" class="dotted-frame">
+      <p>Step 1. Firstly, upload at least one <strong>image</strong>.</p>
+      <p>Step 2. Select an <strong>invoice number</strong></p>
+      <p>Step 3. Select an <strong>invoice date</strong></p>
+      <p>Step 4. Select a <strong>supplier</strong></p>
+      <p>Step 5. Click on <strong>+ ADD PRODUCT</strong> to add products to invoice list</p>
+      <p>* Required fields</p>
+    </div>
+    <div *ngIf="products.length || adjustments.length" class="table-wrapper">
+      <table class="table table--simple">
+        <thead>
+        <tr>
+          <td colspan="2">Product</td>
+          <td>Unit price</td>
+          <td>Quantity</td>
+          <td>Discount</td>
+          <td>Amount</td>
+          <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let product of products; trackBy: trackByFn()"
+            frInvoicesEditorProductsProduct
+            [product]="product"
+            [canBeSaved]="canBeSaved"
+            [isReadOnly]="isReadOnly"
+            (productsChanged)="onProductsChanged($event)"
+            class="table__input-line"></tr>
+
+        <tr *ngFor="let adjustment of adjustments; trackBy: trackByFn()"
+            frInvoicesEditorAdjustmentsAdjustment
+            [adjustment]="adjustment"
+            [canBeSaved]="canBeSaved"
+            [isReadOnly]="isReadOnly"
+            (adjustmentsChanged)="onAdjustmentsChanged($event)"
+            class="table__input-line"></tr>
+
+        <ng-container *ngIf="isGSTRegistered$ | async">
+          <tr class="table__total">
+            <td colspan="4"></td>
+            <td class="text-right">Subtotal:</td>
+            <td>{{invoice.subtotal | money}}</td>
+            <td></td>
+          </tr>
+          <tr class="table__total">
+            <td colspan="4"></td>
+            <td class="text-right">Add tax:</td>
+            <td>{{invoice.taxes | money}}</td>
+            <td></td>
+          </tr>
+        </ng-container>
+        <tr class="table__total">
+          <td colspan="4"></td>
+          <td class="text-right"><strong>Total:</strong></td>
+          <td><strong>{{invoice.total | money}}</strong></td>
+          <td></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-template>
+
+</form>

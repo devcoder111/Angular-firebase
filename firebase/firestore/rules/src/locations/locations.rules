@@ -1,0 +1,23 @@
+match /locations/{id} {
+  allow get: if canGetLocation(getDoc(), id);
+  allow list: if canListLocation(getDoc());
+  allow create: if canCreateLocation(getDocInc());
+  allow update: if canUpdateLocation(getDocInc());
+}
+
+function canGetLocation(doc, id) {
+  return doesUserHasAccessToLocation(doc.organizationId, id);
+}
+
+function canListLocation(doc) {
+  return (doc.availableForUsers.hasAny([getAuth().uid]) || doesUserHaveAdminAccessToOrganization(doc.organizationId))
+   && reqLimitForList();
+}
+
+function canCreateLocation(doc) {
+  return doesUserHasRoleInOrganization(doc.organizationId, 'owner');
+}
+
+function canUpdateLocation(doc) {
+  return doesUserHasRoleInOrganization(doc.organizationId, 'owner');
+}

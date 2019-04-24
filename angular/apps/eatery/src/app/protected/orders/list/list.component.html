@@ -1,0 +1,112 @@
+<div class="container">
+
+  <header class="container__header">
+    <fr-header>Orders</fr-header>
+  </header>
+
+  <main class="container__main">
+
+    <fr-orders-list-filter [filter]="filter$ | async" [state]="state$ | async"
+                           (changed)="setFilter($event)"></fr-orders-list-filter>
+
+    <mat-progress-bar *ngIf="isLoading$ | async; else list" mode="indeterminate"></mat-progress-bar>
+    <h2 *ngIf="loadError$ | async" class="text-center">Some error occurred during fetch of orders</h2>
+
+    <ng-template #list>
+      <ng-container *ngIf="orders$ | async as orders">
+        <div class="table-wrapper" *ngIf="selectedList$ | async as selectedList">
+          <table *ngIf="orders.length; else noItems" class="table table--simple">
+            <thead>
+            <tr>
+              <td></td>
+              <td>Status</td>
+              <td>Order Number</td>
+              <td>Supplier</td>
+              <td>Total</td>
+              <td>Created at</td>
+              <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let order of orders; trackBy: trackByFn()">
+              <td class="table__select">
+                <mat-checkbox (change)="toggleOrder($event,order)" [checked]="!!selectedList[order.id]"></mat-checkbox>
+              </td>
+              <td>{{order.status | orderStatusTitleBySlug}}</td>
+              <td><a [routerLink]="['/orders/', order.id]">{{order.number || 'Generating...'}}</a></td>
+              <td>{{order.supplierName}}</td>
+              <td>{{order.total | money}}</td>
+              <td>{{order.createdAt | date : 'dd MMM yyyy HH:mm'}}</td>
+              <td>
+                <button type="button" mat-icon-button [matMenuTriggerFor]="orderMenu" disableRipple>
+                  <mat-icon>more_horiz</mat-icon>
+                </button>
+                <mat-menu #orderMenu="matMenu" xPosition="before">
+                  <ng-template matMenuContent>
+                    <button type="button" mat-menu-item [routerLink]="['/orders/' + order.id]">
+                      <mat-icon>remove_red_eye</mat-icon>
+                      <span>View</span>
+                    </button>
+                    <button type="button" mat-menu-item *ngIf="canBeModified$ | async"
+                            [routerLink]="['/orders/create']" [queryParams]="{copyFrom: order.id}">
+                      <mat-icon>file_copy</mat-icon>
+                      <span>Copy</span>
+                    </button>
+                    <button type="button" mat-menu-item
+                            *ngIf="canBeDeleted(order)"
+                            (click)="remove(order)">
+                      <mat-icon>delete</mat-icon>
+                      <span>Delete</span>
+                    </button>
+                    <button type="button" mat-menu-item
+                            *ngIf="canBeVoided(order)"
+                            (click)="voidOrder(order)">
+                      <mat-icon>remove_shopping_cart</mat-icon>
+                      <span>Void</span>
+                    </button>
+                    <button type="button" mat-menu-item
+                            *ngIf="canBeUndeleted(order)"
+                            (click)="markAsDraft(order)">
+                      <mat-icon>undo</mat-icon>
+                      <span>Return to Draft</span>
+                    </button>
+                  </ng-template>
+                </mat-menu>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #noItems>
+          <div *ngIf="isFilterUsed$ | async; else messageForNoItemsAtAll">
+            <h3 class="text-center m-b-0">No results for your filter. Try other options</h3>
+          </div>
+          <ng-template #messageForNoItemsAtAll>
+            <h3 class="text-center m-b-0">No orders yet. <a *ngIf="(canBeModified$ | async)"
+                                                            routerLink="/orders/create">Create first one</a></h3>
+          </ng-template>
+        </ng-template>
+      </ng-container>
+    </ng-template>
+  </main>
+
+  <footer class="container__footer">
+    <div class="container__footer__actions">
+      <div class="button-wrapper">
+        <button mat-button
+                color="transparent"
+                type="button"
+                (click)="selectAll()">
+          SELECT ALL
+        </button>
+        <button mat-button
+                color="primary"
+                type="button"
+                (click)="exportPDF()">
+          EXPORT PDF
+        </button>
+      </div>
+    </div>
+  </footer>
+</div>

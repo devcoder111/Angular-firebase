@@ -1,0 +1,271 @@
+<form [formGroup]="form"
+      novalidate
+      id="form">
+  <div class="flex-row flex-row--grid">
+    <div class="flex-col flex-col--grid">
+
+      <h3>Supplier Information</h3>
+      <hr>
+
+      <mat-form-field class="m-t-1">
+        <input matInput
+               formControlName="name"
+               placeholder="Company Name">
+        <mat-error *ngIf="form.controls['name'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="m-t-1">
+        <input matInput
+               formControlName="businessRegistrationNumber"
+               placeholder="Business Registration No.">
+        <mat-error *ngIf="form.controls['businessRegistrationNumber'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="m-t-1 textarea-wrapper">
+          <textarea matInput
+                    matTextareaAutosize
+                    formControlName="address"
+                    placeholder="Address"></textarea>
+        <mat-error *ngIf="form.controls['address'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <div class="m-b-2">
+        <mat-slide-toggle name="isGSTRegistered" formControlName="isGSTRegistered">GST Registered</mat-slide-toggle>
+        <mat-error *ngIf="form.controls['isGSTRegistered'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+      </div>
+
+      <mat-form-field *ngIf="form.controls['GSTRegistrationNumber']">
+        <input matInput
+               formControlName="GSTRegistrationNumber"
+               placeholder="GST Registration No. *">
+        <mat-error
+          *ngIf="form.controls['GSTRegistrationNumber'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <h3>Manage availability by location</h3>
+      <hr>
+      <div class="flex-row m-b-1">
+        <button type="button"
+                mat-button
+                [disabled]="isReadOnly"
+                color="transparent"
+                (click)="selectLocations(supplier)">
+          Click to select supplier's locations
+        </button>
+      </div>
+
+    </div>
+    <div class="flex-col flex-col--grid">
+
+      <h3>Ordering Information</h3>
+      <hr>
+
+      <div class="m-b-2">
+        <mat-slide-toggle name="shouldDisplayPriceInOrder" formControlName="shouldDisplayPriceInOrder">Display price
+          to supplier in the order
+        </mat-slide-toggle>
+        <mat-error *ngIf="form.controls['shouldDisplayPriceInOrder'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+      </div>
+
+      <mat-form-field class="m-t-1">
+        <input matInput
+               formControlName="deliveryTermsAndConditions"
+               placeholder="Delivery Terms & Conditions">
+        <mat-error *ngIf="form.controls['deliveryTermsAndConditions'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <div class="flex-row flex-row--grid flex-row--short">
+
+        <div class="flex-col flex-col--grid">
+          <mat-form-field class="m-t-1">
+            <input matInput
+                   type="number"
+                   min="0"
+                   formControlName="minimumOrderTotal"
+                   placeholder="Minimum Order">
+            <span matPrefix>$&nbsp;</span>
+            <mat-error *ngIf="form.controls['minimumOrderTotal'].hasError('required')">
+              Field is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="form.controls['minimumOrderTotal'].hasError('min')">
+              Negative values are not allowed
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="flex-col flex-col--grid">
+          <mat-form-field class="m-t-1">
+            <input matInput
+                   type="number"
+                   min="0"
+                   formControlName="maximumOrderTotal"
+                   placeholder="Maximum Order">
+            <span matPrefix>$&nbsp;</span>
+            <mat-error *ngIf="form.controls['maximumOrderTotal'].hasError('required')">
+              Field is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="form.controls['maximumOrderTotal'].hasError('min')">
+              Negative values are not allowed
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <div formArrayName="orderMethods" class="m-b-2">
+        <label class="m-b-2">Select at least one ordering method</label>
+        <div *ngFor="let orderMethod of form['controls'].orderMethods['controls'] as methodControls; let i=index"
+             class="flex-row flex-row--grid m-t-1">
+          <ng-container [formGroupName]="i">
+            <div class="flex-col flex-col--grid">
+              <mat-form-field>
+                <mat-label>Order Method</mat-label>
+                <mat-select formControlName="type" required>
+                  <mat-option *ngFor="let methodType of getAvailableOrderMethodTypes(i)" [value]="methodType.slug">
+                    {{methodType.title}}
+                  </mat-option>
+                </mat-select>
+                <mat-error
+                  *ngIf="methodControls[i]['controls']['type'].hasError('required')">
+                  Field is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="flex-col flex-col--grid">
+              <mat-form-field flex>
+                <span *ngIf="methodControls[i]['controls']['type'].value === 'sms'" flex class="addon">+65</span>
+                <input matInput
+                       formControlName="value"
+                       placeholder="Enter value"
+                       flex="80">
+                <mat-error
+                  *ngIf="methodControls[i]['controls']['value'].hasError('required')">
+                  Field is <strong>required</strong>
+                </mat-error>
+                <mat-error
+                  *ngIf="methodControls[i]['controls']['type'].value === 'email' && !methodControls[i]['controls']['value'].hasError('required') && methodControls[i]['controls']['value'].hasError('pattern')">
+                  Field must be valid <strong>email</strong>
+                </mat-error>
+                <mat-error
+                  *ngIf="methodControls[i]['controls']['type'].value !== 'email' && !methodControls[i]['controls']['value'].hasError('required') && methodControls[i]['controls']['value'].hasError('pattern')">
+                   Field must be valid <strong>phone number</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="flex-col flex-col--grid">
+              <button [disabled]="isReadOnly" mat-icon-button type="button" *ngIf="methodControls.length > 1"
+                      (click)="removeOrderMethod(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </ng-container>
+        </div>
+
+        <button mat-icon-button type="button" *ngIf="form['controls'].orderMethods['controls'].length < 2"
+                (click)="addOrderMethod()" [disabled]="isAddOrderMethodDisabled() || isReadOnly">
+          <mat-icon>add</mat-icon>
+          <span>Add Order Method</span>
+        </button>
+      </div>
+
+      <div formArrayName="ccEmailList" class="m-b-2">
+        <label>Cc email list (enter up to 5 email addresses)</label>
+        <div *ngFor="let email of form['controls'].ccEmailList['controls']; let i=index"
+             class="flex-row flex-row--grid m-t-1">
+          <div class="flex-col flex-col--grid">
+            <mat-form-field class="m-t-1">
+              <mat-label>Email {{i + 1}}</mat-label>
+              <input matInput
+                     type="email"
+                     formControlName="{{i}}"
+                     placeholder="Enter email {{i + 1}}">
+              <mat-error *ngIf="form['controls'].ccEmailList['controls'][i].hasError('required')">
+                Field is <strong>required</strong>
+              </mat-error>
+              <mat-error *ngIf="form['controls'].ccEmailList['controls'][i].hasError('pattern')">
+                Field must be valid <strong>email</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-error *ngIf="isEmailDuplicated(i)">
+              Email isn't <strong>unique</strong>
+            </mat-error>
+          </div>
+          <div class="flex-col flex-col--grid m-t-1 p-t-05">
+            <button [disabled]="isReadOnly" mat-icon-button type="button"
+                    *ngIf="form['controls'].ccEmailList['controls'].length > 1"
+                    (click)="removeEmail(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <button mat-icon-button type="button"
+                *ngIf="form['controls'].ccEmailList['controls'].length < 5"
+                (click)="addEmail()" [disabled]="isAddEmailDisabled() || isReadOnly">
+          <mat-icon>add</mat-icon>
+          <span>Add email</span>
+        </button>
+      </div>
+
+      <h3>Sales Information</h3>
+      <hr>
+
+      <mat-form-field class="m-t-1">
+        <input matInput
+               formControlName="salesmanName"
+               placeholder="Salesman Name">
+        <mat-error *ngIf="form.controls['salesmanName'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <div class="flex-row flex-row--short">
+        <div class="flex-col">
+          <mat-form-field class="m-t-1">
+            <input matInput
+                   type="email"
+                   formControlName="salesmanEmail"
+                   placeholder="Salesman Email">
+            <mat-error *ngIf="form.controls['salesmanEmail'].hasError('required')">
+              Field is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="form.controls['salesmanEmail'].hasError('pattern')">
+              Field must be valid <strong>email</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="flex-row flex-row--short">
+        <div class="flex-col">
+          <mat-form-field class="m-t-1">
+            <input matInput
+                   type="tel"
+                   formControlName="salesmanPhoneNumber"
+                   placeholder="Salesman SMS">
+            <mat-error *ngIf="form.controls['salesmanPhoneNumber'].hasError('required')">
+              Field is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="form.controls['salesmanPhoneNumber'].hasError('pattern')">
+              Field must be valid <strong>phone number</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

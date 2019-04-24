@@ -1,0 +1,19 @@
+match /organizations/{id} {
+  allow get: if canGetOrganization(id);
+  allow list: if canListOrganizations(getDoc());
+  allow create: if isAuthenticated();
+  allow update: if canUpdateOrganization(id);
+}
+
+function canGetOrganization(id) {
+  return isUserInOrganization(id);
+}
+
+function canListOrganizations(doc) {
+  return doc.availableForUsers.hasAny([getAuth().uid]) && reqLimitForList();
+}
+
+// we can create org using `batch.set()`
+function canUpdateOrganization(id) {
+  return !frExists(/organizations/$(id)) || doesUserHasRoleInOrganization(id, 'owner')
+}

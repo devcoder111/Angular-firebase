@@ -1,0 +1,4 @@
+match /users/{id} {
+  allow get: if isAuthenticated(); // Authenticated users can see other users and invite them to organization
+  allow update: if isUser(id); // Authenticated users can see other users and invite them to organization
+}

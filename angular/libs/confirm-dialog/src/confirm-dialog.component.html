@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content *ngIf="data.type==='prompt'">
+  <mat-form-field class="textarea-wrapper">
+    <textarea matInput
+              (input)="onAnswerTextChanged($event.target.value)"
+              [placeholder]="data.placeholder || 'Your answer here'"></textarea>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button
+          type="button"
+          color="transparent"
+          mat-dialog-close>
+    No
+  </button>
+  <button mat-button
+          type="button"
+          color="primary"
+          (click)="ok()"
+          [disabled]="data.isAnswerRequired && !isAnswerFilled()">
+    Yes
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,7 @@
+<button type="button" mat-button *ngIf="user$ | async as user" class="wrapper" (click)="signOut()">
+  <img [src]="user.photoURL || 'assets/user.png'" [alt]="user.displayName || user.email" class="avatar avatar--sm">
+  <span class="info">
+    <strong>{{user.displayName || user.email | truncate:15}}</strong>
+  </span>
+  <mat-icon>exit_to_app</mat-icon>
+</button>

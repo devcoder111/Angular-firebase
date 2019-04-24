@@ -1,0 +1,146 @@
+match /orders/{id} {
+  allow get: if canGetOrder(getDoc());
+  allow list: if canListOrders(getDoc());
+  allow create: if canCreateOrder(getDocInc(), id);
+  allow update: if canUpdateOrder(getDoc(), getDocInc(), id);
+}
+
+
+function isOrder(doc) { // document validation using TS interface as a base
+  return doc.size() == 19 // Order interface has 19 fields (including parent interface)
+      && doc.keys().hasAll([ "number", "organizationId", "locationId", "supplierId", "supplierName", "supplierIsGSTRegistered",
+                      "otherInstructions", "deliveryDate", "status", "isDeleted", "publicPage", "voidReason",
+                      "recentOrderNumber", "recentOrderId", "subtotal", "taxes", "total", "createdAt", "createdBy"])
+      && (doc.number is string || doc.number == null)
+      && (doc.organizationId is string && isUserInOrganization(doc.organizationId))
+      && (doc.locationId is string && isUserInLocation(doc.organizationId, doc.locationId))
+      && doc.supplierId is string
+      && doc.supplierName is string
+      && doc.supplierIsGSTRegistered is bool
+      && (doc.otherInstructions is string || doc.otherInstructions == null)
+      && doc.deliveryDate is timestamp
+      && doc.status in  ["draft", "notSent", "sent", "read", "rejected", "toApprove", "voided", "delivered"]
+      && doc.isDeleted is bool
+      && doc.publicPage is map
+      && (doc.publicPage.openedAt is timestamp || doc.publicPage.openedAt == null)
+      && doc.publicPage.html is map
+      && (doc.publicPage.html.url is string || doc.publicPage.html.url == null)
+      && (doc.publicPage.html.fileId is string || doc.publicPage.html.fileId == null)
+      && doc.publicPage.pdf is map
+      && (doc.publicPage.pdf.url is string || doc.publicPage.pdf.url == null)
+      && (doc.publicPage.pdf.fileId is string || doc.publicPage.pdf.fileId == null)
+      && (doc.voidReason is string || doc.voidReason == null)
+      && (doc.recentOrderNumber is string || doc.recentOrderNumber == null)
+      && (doc.recentOrderId is string || doc.recentOrderId == null)
+      && doc.subtotal is number
+      && doc.taxes is number
+      && doc.total is number
+      && doc.createdAt is timestamp
+      && doc.createdBy is string
+}
+
+function canGetOrder(doc) {
+  return doesUserHasAccessToLocation(doc.organizationId, doc.locationId)
+}
+
+function canListOrders(doc) {
+  return doesUserHasAccessToOrganizationOrLocation(doc.organizationId, doc.locationId)
+      && reqLimitForList();
+}
+
+function canCreateOrder(doc, id) {
+  // Sync checks
+  return isOrder(doc)
+      && doc.number == null // No number - it is generated on server side
+      && isOrderDeliveryDateValid(doc)
+      && isCreatedAtValid(doc)
+      && isCreatedByValid(doc)
+      && doc.isDeleted == false
+      && doc.status in ['draft', 'notSent']
+      && doc.publicPage.openedAt == null
+      && doc.publicPage.html.url == null
+      && doc.publicPage.html.fileId == null
+      && doc.publicPage.pdf.url == null
+      && doc.publicPage.pdf.fileId == null
+      && doc.voidReason == null
+  // Async checks
+      && doesUserHasAccessToLocation(doc.organizationId, doc.locationId)
+      && isOrderSupplierValid(doc.supplierId, doc.supplierName, doc.supplierIsGSTRegistered, doc.organizationId)
+      && isOrderRecentOrderValid(doc)
+}
+
+function canUpdateOrder(old, new, id) {
+  // Sync checks
+  return isOrder(new)
+      // FIELDS WERE NOT CHANGED - START
+      && old.number == new.number
+      && old.organizationId == new.organizationId
+      && old.locationId == new.locationId
+      && old.createdAt == new.createdAt
+      && old.createdBy == new.createdBy
+      && old.publicPage.openedAt == new.publicPage.openedAt
+      && old.publicPage.html.url == new.publicPage.html.url
+      && old.publicPage.html.fileId == new.publicPage.html.fileId
+      && old.publicPage.pdf.url == new.publicPage.pdf.url
+      && old.publicPage.pdf.fileId == new.publicPage.pdf.fileId
+      // FIELDS WERE NOT CHANGED - END
+  // Async checks
+      && doesUserHasAccessToLocation(new.organizationId, new.locationId)
+      && (old.deliveryDate == new.deliveryDate || (new.status == 'draft' && isOrderDeliveryDateValid(new)))
+      && (areOrderSupplierFieldsTheSame(old, new) || isOrderSupplierValid(new.supplierId, new.supplierName, new.supplierIsGSTRegistered, new.organizationId))
+      && ((old.recentOrderId == new.recentOrderId && old.supplierId == new.supplierId) || isOrderRecentOrderValid(new))
+      // CHANGES BASED ON FIELD "STATUS" - START
+      && (
+          // ORDER STATUS in ['draft', 'notSent', 'sent', 'read'] - START
+          (
+            (
+              (old.status == new.status && new.status == 'draft') // almost any field can be changed for "draft"
+              || (old.status == 'draft' && new.status == 'notSent' && isOrderUpdateOtherOrderFieldsWerentChanged(old, new))
+              || (old.status == new.status && new.status in ['notSent', 'sent', 'read'] && isOrderUpdateOtherOrderFieldsWerentChanged(old, new))
+            ) 
+            && new.voidReason == null
+          )
+          // ORDER STATUS in ['draft', 'notSent', 'sent', 'read'] - END 
+          ||
+          // ORDER WAS REJECTED/VOIDED - START
+          (
+            old.status in ['notSent', 'sent', 'read'] 
+            && new.status in ['rejected', 'voided']
+            && new.voidReason is string && new.voidReason.size() > 0 // Void reason provided
+            && isOrderUpdateOtherOrderFieldsWerentChanged(old, new)
+          )
+          // ORDER WAS REJECTED/VOIDED - END
+      );
+      // CHANGES BASED ON FIELD "STATUS" - END
+}
+
+// ORDERS - HELPERS - START
+
+function isOrderDeliveryDateValid(doc) {
+  return doc.deliveryDate is timestamp  //request.time.date().toMillis() <= doc.deliveryDate.toMillis(); // this code doesn't work for some reason
+}
+function isOrderRecentOrderValid(doc) {
+  return (doc.recentOrderId == null || doc.supplierId == frGet(/orders/$(doc.recentOrderId)).supplierId)
+      && (doc.recentOrderNumber == null || doc.recentOrderNumber == frGet(/orders/$(doc.recentOrderId)).number)
+}
+function isOrderSupplierValid(id, name, isGSTRegistered, organizationId) {
+  return frGet(/suppliers/$(id)).organizationId == organizationId
+      && frGet(/suppliers/$(id)).name == name
+      && frGet(/suppliers/$(id)).isGSTRegistered == isGSTRegistered
+}
+function areOrderSupplierFieldsTheSame(old, new) {
+  return old.supplierId == new.supplierId
+      && old.supplierName == new.supplierName
+      && old.supplierIsGSTRegistered == new.supplierIsGSTRegistered
+}
+function isOrderUpdateOtherOrderFieldsWerentChanged(old, new) {
+  return areOrderSupplierFieldsTheSame(old, new)
+      && old.otherInstructions == new.otherInstructions
+      && old.deliveryDate == new.deliveryDate
+      && old.subtotal == new.subtotal
+      && old.taxes == new.taxes
+      && old.total == new.total
+      && old.isDeleted == new.isDeleted
+      && old.recentOrderNumber == new.recentOrderNumber
+      && old.recentOrderId == new.recentOrderId
+}

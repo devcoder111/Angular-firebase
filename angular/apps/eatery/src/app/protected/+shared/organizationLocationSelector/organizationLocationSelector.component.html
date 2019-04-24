@@ -1,0 +1,30 @@
+<ng-container *ngIf="organizations$ | async as organizations;">
+  <ng-container *ngIf="locations$ | async as locations;">
+    <mat-form-field *ngIf="activePosition$ | async as position;">
+      <mat-select
+        (selectionChange)="select($event.value)"
+        [value]="position | organizationLocationSelector:organizations:locations">
+        <div *ngFor="let organization of organizations; trackBy: trackByFn()">
+          <mat-option
+            class="fr-organization-location-selector-item__organization"
+            [value]="organization"
+            *ngIf="organization?.name"
+            [disabled]="!(isAdminOrOwner$ | async)">
+            {{organization.name}}
+          </mat-option>
+          <div *ngFor="let location of locations | filterByField:{organizationId: organization.id}">
+            <mat-option
+              class="fr-organization-location-selector-item__location"
+              [value]="location">
+              {{location.name}}
+            </mat-option>
+          </div>
+        </div>
+        <mat-option class="manage_location" *ngIf="isOwner$ | async" (click)="goToLocations()">
+          <mat-icon>store_mall_directory</mat-icon>
+          <span>Manage Locations</span>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+</ng-container>

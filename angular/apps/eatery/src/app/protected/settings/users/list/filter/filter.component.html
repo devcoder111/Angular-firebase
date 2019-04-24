@@ -1,0 +1,37 @@
+<form [formGroup]="form"
+      novalidate>
+  <div class="flex-row flex-row--grid">
+    <div class="flex-col flex-col--grid" style="flex: 0 1 280px">
+      <mat-form-field>
+        <input matInput
+               placeholder="Search by name"
+               formControlName="displayName"/>
+        <button type="button" mat-button matSuffix mat-icon-button>
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    <div class="flex-col flex-col--grid" style="flex: 0 1 280px">
+      <mat-form-field floatLabel="never">
+        <mat-select formControlName="role" placeholder="All roles">
+          <mat-option value="">All roles</mat-option>
+          <mat-option *ngFor="let role of roles; trackBy: trackByFn()" [value]="role.slug">
+            {{role.title}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="button-wrapper">
+    <!--*ngIf="(canBeModified$ | async)"-->
+    <button mat-button
+            *ngIf="false"
+            type="button"
+            routerLink="/users/create"
+            class="button--add">
+      <mat-icon>add</mat-icon>
+      <span>Add User</span>
+    </button>
+  </div>
+</form>

@@ -1,0 +1,3 @@
+match /notificationsQueue/{id} {
+  allow read, write: if false // disallow - only for backend use
+}

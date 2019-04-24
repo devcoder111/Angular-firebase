@@ -1,0 +1,74 @@
+<div class="container">
+
+  <header class="container__header">
+    <h2>{{'Location - ' + ((isNew$ | async) ? 'Create' : 'Edit')}}</h2>
+  </header>
+
+  <main class="container__main">
+    <mat-progress-bar *ngIf="isLoadingLocation$ | async" mode="indeterminate"></mat-progress-bar>
+    <h2 *ngIf="loadLocationError$ | async" class="text-center">
+      Some error occurred during fetch of the location
+    </h2>
+
+    <ng-container *ngIf="location$ | async as location">
+      <div class="flex-row m-b-1">
+        <fr-locations-editor-form [location]="location"
+                                  [isReadOnly]="isReadOnly$ | async"
+                                  (changed)="patchLocation($event)"
+        ></fr-locations-editor-form>
+      </div>
+
+      <h2 *ngIf="saveError$ | async" class="text-center">
+        Some error occurred during save of the location
+      </h2>
+    </ng-container>
+  </main>
+
+  <footer class="container__footer">
+    <div class="container__footer__actions">
+      <div class="button-wrapper">
+        <button mat-button
+                color="transparent"
+                type="button"
+                (click)="cancel()">
+          CANCEL
+        </button>
+        <button *ngIf="isSaving$ | async"
+                mat-button
+                type="button"
+                disabled>
+          SAVING...
+        </button>
+
+        <ng-container *ngIf="!(isSaving$ | async)">
+          <ng-container *ngIf="location$ | async as location">
+            <button *ngIf="canBeRestored$ | async"
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="restore(location)">
+              RESTORE
+            </button>
+            <button *ngIf="canBeDeleted$ | async"
+                    mat-button
+                    color="warn"
+                    type="button"
+                    (click)="remove(location)">
+              DELETE
+            </button>
+
+            <button *ngIf="canBeSaved$ | async"
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="save(location)"
+                    [disabled]="!(isSaveEnabled$ | async)">
+              SAVE
+            </button>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </footer>
+
+</div>

@@ -1,0 +1,3 @@
+match /orderProducts/{id} {
+  allow read, write: if isAuthenticated() // TODO: implement
+}

@@ -1,0 +1,171 @@
+.container__main
+
+  
+@media only screen and (max-width: 1024px)
+
+  // iphone zoom on input, textarea focus
+  // if font-size is bellow 16px it will zoom the entire page
+  // in body the global font-size is set to 14px
+  // so here font-size to set to 16px
+  select,input,textarea 
+    font-size: 16px !important
+
+  // svg icons
+  .mat-input-suffix 
+    svg
+      width: 100%
+      margin: 8px 10px 10px 12px
+
+  // grid
+  .flex-col
+    flex: auto !important
+
+  .flex-row--short
+    padding: 0px !important
+
+  // modal
+  .mat-dialog-content
+    max-height: calc(100vh - 300px) !important
+
+
+  // main container    
+  .container__main
+    padding: 15px
+    overflow-x: hidden
+    max-width: 100vw
+    display: block
+
+  .flex-col
+    max-width: calc(100vw - 30px)
+  
+  // table
+  .table-wrapper
+    max-height: calc(100vh - 320px)
+    overflow: auto
+
+  // form
+  .mat-form-field
+    margin-bottom: 25px
+    min-width: 50px !important
+    width: auto
+    
+    .mat-error
+      margin-top: -2px
+
+  // green add buttons with transparent bg
+  button.mat-button
+    margin: 0px 0px 25px 0px !important
+    width: 100%
+  
+  mat-sidenav-container mat-sidenav
+    width: 300px
+    max-width: calc(100vw - 40px)
+
+
+  // header
+  fr-header
+    button.wrapper.mat-button
+      min-width: unset !important
+      padding: 0px 15px 0px 10px !important
+      margin:  0px !important
+
+    .content
+      margin-left: 10px
+
+      .flex-x--center    
+        justify-content: left
+          
+        span
+          display: block
+          flex: none
+          width: 100%
+
+        .status-label
+          display: inline-block
+          margin-left: 0px
+          width: auto
+          flex: none
+
+    // hiding user's name in mobile view
+    fr-profile
+      .info, mat-icon
+        display: none !important
+
+  // footer
+  footer
+    z-index: 1
+    
+    .button-wrapper
+      padding: 5px
+
+      button
+        flex-grow: 1
+        width: auto !important
+
+
+  fr-locations-list
+    padding: 10px
+
+
+  fr-product-categories-list 
+    .table
+      width: 100% !important
+
+      .mat-icon-button
+        margin: -5px 0px !important
+
+  fr-locations-list
+    .mat-button
+      padding: 0px !important
+
+    .mat-icon
+      height: 18px
+
+    .mat-card
+      padding: 5px 16px !important
+
+    header
+      img
+        height: 32px
+        .avatar--sm
+          height: 28px
+          width: 28px
+
+  div.cdk-overlay-backdrop
+    background: rgba(0, 0, 0, 0.57) !important
+
+  .cdk-overlay-container 
+    flex: auto
+    bottom: 0px
+
+
+  .cdk-overlay-pane.fr-dropdown 
+    width: 90vw !important
+    position: absolute
+    left: 5vw !important
+    bottom: 5vw !important
+    top: unset !important
+    border-radius: 10px !important
+
+    mat-dialog-actions
+      position: absolute !important
+
+    .items
+      max-height: calc(80vh - 106px) !important
+      overflow: auto !important
+
+  .mat-datepicker-content
+    position: fixed
+    bottom: 5vw
+    left: 5vw
+    width: 90vw
+    height: auto
+    border-radius: 10px !important
+    
+    .mat-calendar
+      width: 100% !important
+      height: 100% !important
+
+
+  div.cdk-overlay-backdrop
+    background: rgba(0, 0, 0, 0.57) !important

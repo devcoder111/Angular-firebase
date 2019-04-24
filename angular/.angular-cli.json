@@ -1,0 +1,148 @@
+{
+  "$schema": "./node_modules/@nrwl/schematics/src/schema.json",
+  "project": {
+    "name": "angular",
+    "npmScope": "angular",
+    "latestMigration": "20180424-add-tsconfig-tools"
+  },
+  "e2e": {
+    "protractor": {
+      "config": "./protractor.conf.js"
+    }
+  },
+  "lint": [
+    {
+      "project": "./tsconfig.spec.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/eatery/src/tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/eatery/e2e/tsconfig.e2e.json",
+      "exclude": "**/node_modules/**"
+    }
+  ],
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    }
+  },
+  "apps": [
+    {
+      "name": "eatery",
+      "root": "apps/eatery/src",
+      "outDir": "../firebase/hosting",
+      "assets": [
+        "assets",
+        "favicon.ico"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "../../../test.js",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "../../../tsconfig.spec.json",
+      "prefix": "fr",
+      "styles": [
+        "styles/+index.sass"
+      ],
+      "scripts": [],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      },
+      "tags": []
+    },
+    {
+      "name": "confirm-dialog",
+      "root": "libs/confirm-dialog/src",
+      "test": "../../../test.js",
+      "appRoot": "",
+      "tags": []
+    },
+    {
+      "name": "entity-selector",
+      "root": "libs/entity-selector",
+      "test": "../../../test.js",
+      "appRoot": "",
+      "tags": []
+    },
+    {
+      "name": "images-previewer",
+      "root": "libs/images-previewer/src",
+      "test": "../../../test.js",
+      "appRoot": "",
+      "tags": []
+    },
+    {
+      "name": "money",
+      "root": "libs/money/src",
+      "test": "../../../test.js",
+      "appRoot": "",
+      "tags": []
+    },
+    {
+      "name": "invoice-helpers",
+      "root": "libs/invoice-helpers/src",
+      "test": "../../../test.js",
+      "appRoot": "",
+      "tags": []
+    },
+    {
+      "name": "order-helpers",
+      "root": "libs/order-helpers/src",
+      "test": "../../../test.js",
+      "appRoot": "",
+      "tags": []
+    },
+    {
+      "name": "roles-helpers",
+      "root": "libs/roles-helpers/src",
+      "test": "../../../test.js",
+      "appRoot": "",
+      "tags": []
+    },
+    {
+      "name": "$workspaceRoot",
+      "root": ".",
+      "appRoot": ""
+    }
+  ],
+  "defaults": {
+    "schematics": {
+      "collection": "@nrwl/schematics"
+    },
+    "styleExt": "sass",
+    "class": {
+      "spec": true
+    },
+    "component": {
+      "changeDetection": "OnPush",
+      "viewEncapsulation": "None",
+      "spec": false
+    },
+    "directive": {
+      "flat": false,
+      "spec": true
+    },
+    "pipe": {
+      "flat": false,
+      "spec": true
+    },
+    "service": {
+      "flat": false,
+      "spec": true
+    },
+    "guard": {
+      "flat": false,
+      "spec": true
+    }
+  },
+  "packageManager": "yarn",
+  "warnings": {
+    "typescriptMismatch": false
+  }
+}

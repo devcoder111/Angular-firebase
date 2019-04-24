@@ -1,0 +1,163 @@
+<!--<form [formGroup]="form"-->
+<!--novalidate-->
+<!--id="form">-->
+<!--<div class="flex-row flex-row&#45;&#45;grid">-->
+<!--<div class="flex-col flex-col&#45;&#45;grid">-->
+
+<!--<h3>User</h3>-->
+<!--<hr>-->
+
+<!--<mat-form-field class="m-t-1">-->
+<!--<fr-autocomplete-input formControlName="supplierId"-->
+<!--[config]="selectSupplierConfig"-->
+<!--[placeholder]="(user.supplierId ? '' : 'Click to select ') + 'Supplier'"></fr-autocomplete-input>-->
+<!--<mat-error *ngIf="form.controls['supplierId'].hasError('required')">-->
+<!--Field is <strong>required</strong>-->
+<!--</mat-error>-->
+<!--</mat-form-field>-->
+
+<!--<mat-form-field class="m-t-1">-->
+<!--<input matInput formControlName="code" placeholder="Enter user code *">-->
+<!--<mat-error *ngIf="form.controls['code'].hasError('required')">-->
+<!--Field is-->
+<!--<strong>required</strong>-->
+<!--</mat-error>-->
+<!--</mat-form-field>-->
+
+<!--<mat-form-field class="m-t-1">-->
+<!--<textarea matInput matTextareaAutosize formControlName="name"-->
+<!--placeholder="Enter user name *"></textarea>-->
+<!--<mat-error *ngIf="form.controls['name'].hasError('required')">-->
+<!--Field is-->
+<!--<strong>required</strong>-->
+<!--</mat-error>-->
+<!--</mat-form-field>-->
+
+<!--<mat-form-field class="m-t-1">-->
+<!--<input matInput formControlName="nickname" placeholder="Enter user nickname *">-->
+<!--<mat-error *ngIf="form.controls['nickname'].hasError('required')">-->
+<!--Field is-->
+<!--<strong>required</strong>-->
+<!--</mat-error>-->
+<!--</mat-form-field>-->
+<!--<h3>Manage availability by location</h3>-->
+<!--<hr>-->
+<!--<div class="flex-row m-b-1">-->
+<!--<button type="button"-->
+<!--mat-button-->
+<!--[disabled]="isReadOnly"-->
+<!--color="transparent"-->
+<!--(click)="selectLocations(user)">-->
+<!--Click to select user's locations-->
+<!--</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="flex-col flex-col&#45;&#45;grid">-->
+
+<!--<h3>User price</h3>-->
+<!--<hr>-->
+
+<!--<mat-form-field class="m-t-1">-->
+<!--<input matInput-->
+<!--type="number"-->
+<!--[min]="minPrice"-->
+<!--formControlName="lastPriceFromHistory"-->
+<!--placeholder="User price">-->
+<!--<span matPrefix>$&nbsp;</span>-->
+<!--<mat-error *ngIf="form.controls['lastPriceFromHistory'].hasError('required')">-->
+<!--Field is <strong>required</strong>-->
+<!--</mat-error>-->
+<!--<mat-error *ngIf="form.controls['lastPriceFromHistory'].hasError('min')">-->
+<!--Price should be more or equal <strong>{{minPrice}}</strong>.-->
+<!--</mat-error>-->
+<!--</mat-form-field>-->
+
+<!--<div class="flex-row flex-row&#45;&#45;grid">-->
+
+<!--<div class="flex-col flex-col&#45;&#45;grid">-->
+<!--<mat-form-field class="m-t-1">-->
+<!--<mat-select required placeholder="Choose pricing unit type" formControlName="invoiceUnitTypeId">-->
+<!--<mat-option *ngFor="let unitType of unitTypes$ | async; trackBy: trackByFn()" [value]="unitType.id">-->
+<!--{{unitType.name}}-->
+<!--</mat-option>-->
+<!--</mat-select>-->
+<!--<mat-error *ngIf="form.controls['invoiceUnitTypeId'].hasError('required')">-->
+<!--Field is <strong>required</strong>-->
+<!--</mat-error>-->
+<!--</mat-form-field>-->
+<!--</div>-->
+
+<!--<div class="flex-col flex-col&#45;&#45;grid">-->
+<!--<mat-form-field class="m-t-1">-->
+<!--<mat-select placeholder="Order using different unit" formControlName="orderUnitTypeId">-->
+<!--<mat-option *ngFor="let unitType of unitTypes$ | async; trackBy: trackByFn()" [value]="unitType.id">-->
+<!--{{unitType.name}}-->
+<!--</mat-option>-->
+<!--</mat-select>-->
+<!--<mat-hint-->
+<!--*ngIf="!!form.controls['orderUnitTypeId'].value && !!form.controls['orderUnitTypeRatio'].value && !!form.controls['lastPriceFromHistory'].value"-->
+<!--align="start">-->
+<!--<strong>-->
+<!--1 {{form.controls['orderUnitTypeId'].value}} = {{priceByOrderUnit() | money}}-->
+<!--</strong>-->
+<!--</mat-hint>-->
+<!--<mat-hint *ngIf="!!form.controls['orderUnitTypeId'].value || !!form.controls['orderUnitTypeRatio'].value"-->
+<!--align="end">-->
+<!--<a href="javascript:;" (click)="resetOrderUnit()">Reset unit</a>-->
+<!--</mat-hint>-->
+<!--</mat-form-field>-->
+<!--</div>-->
+
+<!--<div class="flex-col flex-col&#45;&#45;grid">-->
+<!--<mat-form-field class="m-t-1">-->
+<!--<span matPrefix>=&nbsp;</span>-->
+<!--<input matInput-->
+<!--type="number"-->
+<!--[min]="minUnitTypeRatio"-->
+<!--formControlName="orderUnitTypeRatio"-->
+<!--placeholder="Order Unit Type Ratio">-->
+<!--<span *ngIf="user.invoiceUnitTypeName" matSuffix>&nbsp;{{user.invoiceUnitTypeName}}</span>-->
+<!--<mat-error *ngIf="form.controls['orderUnitTypeRatio'].hasError('unitTypeRatio')">-->
+<!--Ratio should be more or equal <strong>{{minUnitTypeRatio}}</strong>.-->
+<!--</mat-error>-->
+<!--</mat-form-field>-->
+<!--</div>-->
+
+<!--</div>-->
+
+<!--<h3>Price Change Notification</h3>-->
+<!--<hr>-->
+
+<!--<mat-form-field class="m-t-1">-->
+<!--<mat-select required-->
+<!--placeholder="Send notification if price change is more than"-->
+<!--formControlName="priceChangeNotificationPercentage">-->
+<!--<mat-option *ngFor="let option of priceChangeNotificationPercentageOptions; trackBy: trackByFn()"-->
+<!--[value]="option">-->
+<!--{{option}}%-->
+<!--</mat-option>-->
+<!--</mat-select>-->
+<!--<mat-error *ngIf="form.controls['priceChangeNotificationPercentage'].hasError('required')">-->
+<!--Field is <strong>required</strong>-->
+<!--</mat-error>-->
+<!--</mat-form-field>-->
+
+<!--<h3>User Category</h3>-->
+<!--<hr>-->
+
+<!--<mat-form-field class="m-t-1">-->
+<!--<mat-select required placeholder="Select the user category for this user"-->
+<!--formControlName="userCategoryId">-->
+<!--<mat-option *ngFor="let category of userCategories$ | async as userCategories; trackBy: trackByFn()"-->
+<!--[value]="category.id">-->
+<!--{{category.name}}-->
+<!--</mat-option>-->
+<!--</mat-select>-->
+<!--<mat-error *ngIf="form.controls['userCategoryId'].hasError('required')">-->
+<!--Field is <strong>required</strong>-->
+<!--</mat-error>-->
+<!--</mat-form-field>-->
+
+<!--</div>-->
+<!--</div>-->
+<!--</form>-->

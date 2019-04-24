@@ -1,0 +1,71 @@
+<form [formGroup]="form"
+      novalidate
+      id="form">
+  <div class="flex-row input-row flex-row--grid">
+    <div class="flex-col flex-col--grid">
+      <mat-form-field>
+        <input matInput
+               formControlName="name"
+               placeholder="Location Name">
+        <mat-error *ngIf="form.controls['name'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="flex-row input-row flex-row--grid">
+    <div class="flex-col flex-col--grid">
+      <mat-form-field class="textarea">
+        <textarea matInput
+               formControlName="details"
+               placeholder="Outlet Details"></textarea>
+        <mat-error *ngIf="form.controls['details'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="flex-row input-row flex-row--grid">
+    <div class="flex-col flex-col--grid">
+      <mat-form-field class="textarea">
+        <textarea matInput
+               formControlName="address"
+               placeholder="Outlet Address"></textarea>
+        <mat-error *ngIf="form.controls['address'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+
+
+  <div class="flex-row input-row flex-row--grid">
+    <div class="flex-col flex-col--grid flex-col-1">
+      <mat-form-field>
+        <input matInput
+               [maxlength]="3"
+               class="uppercase"
+               formControlName="code"
+               placeholder="Postal Code (3 symbol length)">
+        <mat-error *ngIf="form.controls['code'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="form.controls['code'].hasError('minlength')">
+          Field must have exactly 3 symbols
+        </mat-error>
+        <mat-hint *ngIf="form.controls['code'].pending">
+          Checking availability of '{{ form.controls['code'].value }}'
+        </mat-hint>
+        <mat-error *ngIf="form.controls['code'].hasError('alreadyTaken')">
+          This code is <strong>already taken</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+
+
+
+  <p *ngIf="location.isDeleted"><strong>This location is marked as deleted.</strong></p>
+</form>

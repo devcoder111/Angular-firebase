@@ -1,0 +1,10 @@
+match /productCategories/{id} {
+  allow read: if isAuthenticated(); // TODO: implement
+  allow create: if isAuthenticated();
+  allow update: if canUpdateProductCategory(getDoc(), getDocInc(), id);
+}
+
+function canUpdateProductCategory(old, new, id){
+  return  old.locked == new.locked
+    && ( old.locked == false || (old.locked == true && new.isDeleted == false) )
+}

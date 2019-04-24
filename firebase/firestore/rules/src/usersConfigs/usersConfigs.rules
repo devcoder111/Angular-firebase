@@ -1,0 +1,4 @@
+match /usersConfigs/{id} {
+  allow get: if isUser(id); // Private user's information available only for himself
+  allow update: if isUser(id); // Private user's information available only for himself
+}

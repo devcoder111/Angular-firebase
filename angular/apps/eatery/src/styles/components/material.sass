@@ -1,0 +1,86 @@
+// Content of this file overrides some material design styles
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css"
+
+mat-toolbar
+  height: $toolbarHeight
+  box-shadow: 0 1px 3px 2px rgba(195, 191, 191, 0.23)
+  background-color: $colorNotWhite !important
+  color: $colorSlateGrey !important
+  @media screen and (max-width: 768px)
+    background-color: $colorCharcoalGrey !important
+    color: $colorNotWhite !important
+
+  mat-toolbar-row
+    height: $toolbarHeight
+    padding-right: 0 !important
+    overflow-x: hidden
+  .mat-drawer-container
+    background-color: white
+
+// material restyle
+.mat-form-field
+  width: 100%
+  &--no-padding-bottom // TODO: not used
+    .mat-input-wrapper
+    padding-bottom: 0 !important
+  &-infix
+    width: initial !important
+
+.mat-input-element
+  min-height: $fontSizeL
+
+.mat-card
+  background-color: $colorNotWhite
+  overflow: hidden
+  .card__wrapper &
+    +no-border
+    padding: 0
+    box-shadow: none !important
+
+.mat-select-arrow
+  margin-top: $customPadding !important
+
+.mat-checkbox
+  margin-top: -5px
+  margin-bottom: 5px
+
+  &-label
+    font-size: $fontSizeS
+
+.mat-icon
+
+  &--xs
+    font-size: 18px !important
+    width: 18px !important
+    height: 18px !important
+
+  &.mat-green
+    color: $colorCoolGreen
+
+  &.mat-gray
+    color: #657284
+
+.mat-dialog-container
+  .mat-dialog-actions
+    margin-bottom: 0
+    justify-content: center
+
+//animation start
+
+.mat-icon--rotate
+  animation: 1s linear 0s normal none infinite running rot
+
+@keyframes rot
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+
+//animation end
+
+@media (min-width: 768px)
+  .mat-card .mat-form-field
+    margin-right: 32px
+  .mat-checkbox
+    margin-top: 7px

@@ -1,0 +1,4 @@
+match /unitTypes/{id} {
+  allow get: if isAuthenticated()
+  allow list: if isAuthenticated()
+}

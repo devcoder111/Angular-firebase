@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "foodrazor-app",
+    "dev": "foodrazor-dev"
+  }
+}

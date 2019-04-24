@@ -1,0 +1,67 @@
+// More info about security rules:
+// 1. General - https://firebase.google.com/docs/storage/security/
+// 2. Get Started - https://firebase.google.com/docs/storage/security/start
+// 3. Paths, match, request, resource - https://firebase.google.com/docs/storage/security/secure-files
+// 4. Authentication & User details - https://firebase.google.com/docs/storage/security/user-security
+// 5. Docs for syntax of security rules (Advanced) - https://firebase.google.com/docs/reference/security/storage/
+// 6. Set & get user details - https://firebase.google.com/docs/auth/admin/custom-claims
+
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // GLOBAL FUNCTIONS - START
+
+    // AUTH - START
+    function isAuthenticated() {
+      return request.auth!=null;
+    }
+    function isUser(userId) {
+      return request.auth.uid == userId;
+    }
+    // AUTH - END
+
+    // REQUEST RESOURCE - START (uploading file)
+    function isReqMimeType(mimeType) {
+      return request.resource.contentType.matches(mimeType);
+    }
+    function isReqLessThanMB(mbAmount) {
+      return request.resource.size < mbAmount * 1024 * 1024;
+    }
+    // REQUEST RESOURCE - END
+
+    // RESOURCE - START (uploaded file)
+    function isResMimeType(mimeType) {
+      return resource.contentType.matches(mimeType);
+    }
+    function isResLessThanMB(mbAmount) {
+      return resource.size < mbAmount * 1024 * 1024;
+    }
+    // RESOURCE - END
+
+    // GLOBAL FUNCTIONS - END
+
+
+    match /organizations/{organizationId}/locations/{locationId}/users/{userId} {
+
+      match /orders/{orderId}/publicPageHTML/{fileId} {
+          allow read: if true;
+      }
+
+      match /invoices {
+        match /{invoiceId}/images/{fileId} {
+          allow read: if isAuthenticated();
+          allow write: if isUser(userId)
+                       && (isReqMimeType('image/png') || isReqMimeType('image/jpeg'))
+                       && isReqLessThanMB(10);
+        }
+        match /_pdfs/{fileId} {
+          allow read: if isAuthenticated();
+          allow write: if isUser(userId)
+                       && isReqMimeType('application/pdf')
+                       && isReqLessThanMB(100);
+        }
+      }
+    }
+  }
+}

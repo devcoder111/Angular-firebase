@@ -1,0 +1,118 @@
+<div class="container">
+
+  <header class="container__header">
+    <fr-header>Invoices</fr-header>
+  </header>
+
+  <main class="container__main">
+    <div *ngIf="counters$ | async as counters" class="statistics">
+      <div>
+        <h3>Total invoices</h3>
+        <span>{{counters.amount || 0}} Invoices</span>
+      </div>
+      <div>
+        <h3>Total amount</h3>
+        <span>{{counters.sum | money}}</span>
+      </div>
+    </div>
+
+    <fr-invoices-list-filter [filter]="filter$ | async" (changed)="setFilter($event)"
+                             [state]="state$ | async"></fr-invoices-list-filter>
+
+    <mat-progress-bar *ngIf="isLoading$ | async; else list" mode="indeterminate"></mat-progress-bar>
+    <h2 *ngIf="loadError$ | async" class="text-center">Some error occurred during fetch of invoices</h2>
+
+    <ng-template #list>
+      <ng-container *ngIf="invoices$ | async as invoices">
+        <div class="table-wrapper">
+
+
+          <table *ngIf="invoices.length; else noItems" class="table table--simple">
+            <thead>
+            <tr>
+              <td></td>
+              <td>Issue</td>
+              <td>Invoice no.</td>
+              <td>Invoice Date</td>
+              <td>Supplier Name</td>
+              <td>Subtotal</td>
+              <td>GST</td>
+              <td>Total</td>
+              <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let invoice of invoices; trackBy: trackByFn()">
+              <td class="table__select">
+                <mat-checkbox></mat-checkbox>
+              </td>
+              <td>{{invoice.issue || '---'}}</td>
+              <td><a [routerLink]="['/invoices/', invoice.id]">{{ invoice.number || (invoice.status === 'draft' ? 'Draft' : 'Processing...') }}</a></td>
+              <td>{{(invoice.invoiceDate | date : 'dd MMM yyyy') || '---'}}</td>
+              <td>{{invoice.supplierName || '---'}}</td>
+              <td>{{invoice.subtotal | money}}</td>
+              <td>{{invoice.taxes | money}}</td>
+              <td>{{invoice.total | money}}</td>
+              <td>
+                <button type="button" mat-icon-button [matMenuTriggerFor]="invoiceMenu" disableRipple>
+                  <mat-icon>more_horiz</mat-icon>
+                </button>
+                <mat-menu #invoiceMenu="matMenu" xPosition="before">
+                  <ng-template matMenuContent>
+                    <button type="button" mat-menu-item [routerLink]="['/invoices/' + invoice.id]">
+                      <mat-icon>{{invoice.status=='done' ? 'remove_red_eye' : 'edit'}}</mat-icon>
+                      <span>{{invoice.status=='done' ? 'View' : 'Edit'}}</span>
+                    </button>
+                    <button type="button" mat-menu-item
+                            *ngIf="canBeDeleted(invoice)"
+                            (click)="remove(invoice)">
+                      <mat-icon>delete</mat-icon>
+                      <span>Delete</span>
+                    </button>
+                    <button type="button" mat-menu-item
+                            *ngIf="canBeUndeleted(invoice)"
+                            (click)="restore(invoice)">
+                      <mat-icon>undo</mat-icon>
+                      <span>Restore</span>
+                    </button>
+                  </ng-template>
+                </mat-menu>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #noItems>
+          <div *ngIf="isFilterUsed$ | async; else messageForNoItemsAtAll">
+            <h3 class="text-center m-b-0">No results for your filter. Try other options</h3>
+          </div>
+          <ng-template #messageForNoItemsAtAll>
+            <h3 class="text-center m-b-0">No invoices yet. <a *ngIf="(canBeModified$ | async)"
+                                                              routerLink="/invoices/create">Create first one</a></h3>
+          </ng-template>
+        </ng-template>
+      </ng-container>
+    </ng-template>
+  </main>
+
+  <footer class="container__footer">
+    <div class="container__footer__actions">
+      <div class="button-wrapper">
+        <button mat-button
+                color="transparent"
+                type="button"
+                (click)="selectAll()">
+          SELECT ALL
+        </button>
+        <button mat-button
+                color="primary"
+                type="button"
+                (click)="exportPDF()">
+          EXPORT PDF
+        </button>
+      </div>
+    </div>
+  </footer>
+
+</div>

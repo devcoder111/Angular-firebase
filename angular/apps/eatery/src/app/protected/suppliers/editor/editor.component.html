@@ -1,0 +1,66 @@
+<div class="container">
+
+  <header class="container__header">
+    <fr-header>
+      <div class="flex-row flex-x--center">
+        <span>{{((isNew$ | async) ? 'Create Supplier' : (supplier$ | async)?.name)}}</span>
+        <span *ngIf="(supplier$ | async)?.baseSupplierId"
+              class="status-label status-label--system">system supplier</span>
+      </div>
+    </fr-header>
+  </header>
+
+  <main class="container__main">
+    <mat-progress-bar *ngIf="isLoadingSupplier$ | async" mode="indeterminate"></mat-progress-bar>
+    <h2 *ngIf="loadSupplierError$ | async" class="text-center">
+      Some error occurred during fetch of the supplier
+    </h2>
+
+    <ng-container *ngIf="supplier$ | async as supplier">
+      <div class="flex-row m-b-1">
+        <fr-suppliers-editor-form [supplier]="supplier"
+                                  [isReadOnly]="!(canBeModified$ | async)"
+                                  (changed)="patchSupplier($event)"
+                                  (validation)="setFormValid($event)"
+        ></fr-suppliers-editor-form>
+      </div>
+
+      <h2 *ngIf="saveError$ | async" class="text-center">
+        Some error occurred during save of the supplier
+      </h2>
+    </ng-container>
+  </main>
+
+  <footer class="container__footer">
+    <div class="container__footer__actions">
+      <div class="button-wrapper">
+        <button mat-button
+                color=transparent
+                type="button"
+                (click)="cancel()">
+          {{!(canBeModified$ | async) ? 'Back to list' : 'CANCEL'}}
+        </button>
+        <button *ngIf="(isSaving$ | async)"
+                mat-button
+                color=transparent
+                type="button"
+                disabled>
+          SAVING...
+        </button>
+
+        <ng-container *ngIf="!(isSaving$ | async)">
+          <ng-container *ngIf="supplier$ | async as supplier">
+            <button *ngIf="canBeSaved$ | async"
+                    mat-button
+                    color="primary"
+                    type="submit"
+                    (click)="save()"
+                    [disabled]="!(isSaveEnabled$ | async) || !isFormValid">
+              SAVE
+            </button>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </footer>
+</div>

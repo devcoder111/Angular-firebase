@@ -1,0 +1,122 @@
+<div class="container">
+
+  <header class="container__header">
+    <fr-header>
+      <div class="flex-row flex-x--center">
+        <ng-container *ngIf="invoice$ | async as invoice">
+          <span *ngIf="isNew$ | async; else displayNumber">Add Invoice Manually</span>
+          <ng-template #displayNumber>
+            <span>Invoice {{invoice.number ? 'No. '+invoice.number : 'without number...'}}</span>
+          </ng-template>
+          <span class="status-label {{'status-label--' + invoice.status}}">
+          {{invoice.status | invoiceStatusTitleBySlug}}
+          </span>
+          <span *ngIf="invoice.isDeleted" class="status-label status-label--deleted">
+            Deleted
+          </span>
+        </ng-container>
+      </div>
+    </fr-header>
+  </header>
+
+  <main class="container__main">
+
+    <mat-progress-bar *ngIf="isLoadingInvoice$ | async" mode="indeterminate"></mat-progress-bar>
+
+    <h2 *ngIf="loadInvoiceError$ | async" class="text-center">
+      Some error occurred during fetch of the invoice
+    </h2>
+
+    <!--Commented HTML below - example of how to use "status-message" (reusable css-component)-->
+    <!--<div class="status-message status-message&#45;&#45;notSent">-->
+    <!--<p><strong>Qty field</strong> has not been not been filled in by william@companyA.com on 30 Apr 2018, 5:00pm.</p>-->
+    <!--</div>-->
+
+    <div>
+      <ng-container *ngIf="invoice$ | async as invoice">
+
+        <div class="flex-row flex-row--grid m-b-1">
+          <div class="flex-col flex-col--grid">
+            <fr-invoice-images-carousel [isReadOnly]="!(canModify$ | async) || !(canBeSaved$ | async)"></fr-invoice-images-carousel>
+          </div>
+          <div class="flex-col flex-col--grid">
+
+            <fr-invoices-editor-form [invoice]="invoice"
+                                     [canBeSaved]="canBeSaved$ | async"
+                                     [products]="(products$ | async)"
+                                     [isReadOnly]="!(canModify$ | async)"
+                                     [isLoadingProducts]="isLoadingProducts$ | async"
+                                     [loadProductsError]="loadProductsError$ | async"
+                                     (productsChanged)="setProducts($event)"
+                                     [adjustments]="(adjustments$ | async)"
+                                     [isLoadingAdjustments]="isLoadingAdjustments$ | async"
+                                     [loadAdjustmentsError]="loadAdjustmentsError$ | async"
+                                     (adjustmentsChanged)="setAdjustments($event)"
+                                     (changed)="patchInvoice($event)"
+            ></fr-invoices-editor-form>
+
+          </div>
+        </div>
+
+        <h2 *ngIf="saveError$ | async" class="text-center">
+          Some error occurred during save of the invoice
+        </h2>
+      </ng-container>
+    </div>
+
+  </main>
+
+  <footer class="container__footer">
+    <div class="container__footer__actions">
+      <div class="button-wrapper">
+        <button mat-button
+                color="transparent"
+                type="button"
+                (click)="cancel()">
+          {{(canBeSaved$ | async) ? 'CANCEL' : 'BACK TO LIST'}}
+        </button>
+        <button *ngIf="isSaving$ | async"
+                mat-button
+                color="transparent"
+                type="button"
+                disabled>
+          SAVING...
+        </button>
+        <ng-container *ngIf="!(isSaving$ | async)">
+          <ng-container *ngIf="invoice$ | async as invoice">
+            <button *ngIf="(canBeUndeleted$ | async)"
+                    mat-button
+                    color="primary"
+                    type="button"
+                    (click)="restore(invoice)">
+              RESTORE
+            </button>
+            <button *ngIf="(canBeDeleted$ | async)"
+                    mat-button
+                    color="warn"
+                    type="button"
+                    (click)="remove(invoice)">
+              DELETE
+            </button>
+            <button *ngIf="canBeDeleted$ | async"
+                    mat-button
+                    color="transparent"
+                    type="button"
+                    (click)="save(true)">
+              SAVE AS DRAFT
+            </button>
+            <button *ngIf="(canBeSaved$ | async)"
+                    mat-button
+                    (click)="save()"
+                    color="primary"
+                    type="button"
+                    [disabled]="!(isSaveEnabled$ | async)">
+              PROCESS
+            </button>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </footer>
+
+</div>

@@ -1,0 +1,82 @@
+<mat-card>
+  <img src="assets/logo-black.svg"/>
+  <div *ngIf="authState$ | async as authState">
+    <div *ngIf="
+      authState === AuthState.notAuthenticated ||
+      authState === AuthState.emailSent ||
+      authState === AuthState.passwordChanged" class="flex-row flex-row--grid">
+      <div class="flex-col flex-col--grid">
+        <h1 class="bold-caption">SIGN IN</h1>
+        <p>Welcome back, please sign in with your registered account</p>
+        <p>Don't have an account? Please <a routerLink="/onboarding/sign-up">Sign Up</a></p>
+        <p><a routerLink="/public/privacy" target="_blank">Privacy Policy</a> & <a routerLink="/public/terms" target="_blank">Terms</a></p>
+      </div>
+      <div class="flex-col flex-col--grid">
+        <ng-container>
+          <form [formGroup]="form" novalidate id="form">
+            <mat-form-field>
+              <input matInput
+                     type="email"
+                     formControlName="email"
+                     (keyup.enter)="signIn()"
+                     placeholder="Email address">
+              <mat-error *ngIf="form.controls['email'].hasError('required')">
+                Field is <strong>required</strong>
+              </mat-error>
+              <mat-error *ngIf="form.controls['email'].hasError('pattern')">
+                Should be valid email.
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput
+                     type="password"
+                     formControlName="password"
+                     (keyup.enter)="signIn()"
+                     placeholder="Password">
+              <mat-error *ngIf="form.controls['password'].hasError('required')">
+                Field is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <p><a routerLink="/onboarding/reset-password">Forget your password?</a></p>
+
+            <button type="button" mat-button color="primary" (click)="signIn()" [disabled]="form.invalid">SIGN IN
+            </button>
+            <p>
+              <mat-error *ngIf="authError$ | async as authError">
+                {{authError}}
+              </mat-error>
+            </p>
+          </form>
+        </ng-container>
+
+      </div>
+    </div>
+
+    <ng-container *ngIf="authState === AuthState.authenticationInProgress">
+      <h4>Wait few moments until we get data about your profile :)</h4>
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <br/>
+      <button type="button" mat-button color="primary" (click)="cancel()">CANCEL</button>
+    </ng-container>
+
+    <ng-container *ngIf="authState === AuthState.authenticationError">
+      <div class="text-center">
+        <h4>{{authError$ | async}}</h4>
+        <button type="button" mat-button color="primary" (click)="cancel()">
+          Try again
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="
+      authState === AuthState.organizationLoaded ||
+      authState === AuthState.userProfileLoading ||
+      authState === AuthState.passwordChangingInProgress">
+      <h4>
+        Redirecting...
+      </h4>
+      <button type="button" mat-button color="primary" (click)="cancel()">CANCEL</button>
+    </ng-container>
+  </div>
+</mat-card>

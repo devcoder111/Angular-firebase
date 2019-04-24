@@ -1,0 +1,19 @@
+<ul class="filters">
+  <li *ngFor="let option of options; trackBy:trackByFn()"
+      class="filters__item"
+      [class.filters__item--active]="option.value === value">
+    <a class="filters__item__link"
+       (click)="setValue(option.value)"
+       href="javascript:">
+      {{option.title}}
+    </a>
+    <!--<span class="filters__item__count">50</span>-->
+  </li>
+  <li *ngIf="showAllItems" class="filters__item" [class.filters__item--active]="!value">
+    <a class="filters__item__link"
+       (click)="setValue(null)"
+       href="javascript:">
+      All Items
+    </a>
+  </li>
+</ul>

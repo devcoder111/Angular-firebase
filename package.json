@@ -1,0 +1,60 @@
+{
+  "name": "foodrazor",
+  "version": "2.0.0",
+  "description": "FoodRazor v2.0",
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:foodrazor_offical/mono-repo.git"
+  },
+  "author": "Anton Shubin <2spy4x@gmail.com>",
+  "license": "",
+  "private": true,
+  "scripts": {
+    "install-all": "yarn && yarn --cwd shared && yarn --cwd \"angular/apps/eatery/e2e\" && yarn --cwd angular && yarn --cwd \"firebase/functions\" && yarn --cwd \"firebase/dev-scripts\" install-all && yarn --cwd \"firebase/firestore\" install-all",
+    "install-additional-functions-deps": "yarn --cwd \"firebase/functions\" init-ghostscript",
+    "start": "yarn start:browser",
+    "start:browser": "yarn --cwd angular start",
+    "start:server": "yarn build && firebase serve",
+    "format:manual": "prettier {angular,firebase,shared}/**/*.ts --write",
+    "format:pre-commit": "pretty-quick --staged",
+    "lint": "yarn lint:angular && yarn lint:functions && yarn lint:firestore",
+    "lint:angular": "yarn --cwd angular lint",
+    "lint:functions": "yarn --cwd \"firebase/functions\" lint",
+    "lint:firestore": "yarn --cwd \"firebase/firestore\" build",
+    "build": "yarn build:angular && yarn build:functions && yarn build:dev-scripts",
+    "build:ci": "yarn build:angular --sm && yarn build:functions && yarn build:dev-scripts",
+    "build:angular": "yarn --cwd angular build",
+    "build:functions": "yarn --cwd \"firebase/functions\" build",
+    "build:firestore": "yarn --cwd \"firebase/firestore\" build",
+    "build:dev-scripts": "yarn --cwd \"firebase/dev-scripts\" build",
+    "test": "yarn test:shared",
+    "test:ci": "yarn test:shared && yarn test:firestore:ci && yarn test:functions:ci",
+    "test:shared": "yarn --cwd \"shared\" test",
+    "test:firestore": "yarn --cwd \"firebase/firestore/\" test",
+    "test:firestore:ci": "bash dev-workflow-scripts/ci-test-firestore.bash",
+    "test:functions:ci": "yarn --cwd firebase/functions/ test",
+    "pre-deploy": "yarn predeploy:angular && yarn predeploy:functions",
+    "pre-deploy:angular": "yarn lint:angular && yarn build:angular --sm",
+    "pre-deploy:functions": "yarn lint:functions && yarn build:functions",
+    "pre-deploy:firestore": "yarn build:firestore",
+    "deploy": "firebase deploy",
+    "dev-scripts:fill-firebase-with-demo-data": "yarn --cwd \"firebase/dev-scripts\" fill-firebase-with-demo-data",
+    "dev-scripts:playground": "yarn --cwd \"firebase/dev-scripts\" playground",
+    "dev-scripts:backup": "yarn --cwd \"firebase/dev-scripts\" backup",
+    "e2e": "yarn dev-scripts:fill-firebase-with-demo-data --e2e && yarn --cwd \"angular/apps/eatery/e2e\" e2e",
+    "e2e-local": "yarn --cwd \"angular/apps/eatery/e2e\" e2e --config baseUrl='http://localhost:4200'"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "bash dev-workflow-scripts/pre-commit.bash"
+    }
+  },
+  "devDependencies": {
+    "husky": "^1.0.0-rc.13",
+    "prettier": "^1.14.2",
+    "pretty-quick": "^1.6.0"
+  },
+  "engines": {
+    "node": "8.9.0"
+  }
+}

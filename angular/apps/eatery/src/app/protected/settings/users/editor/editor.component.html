@@ -1,0 +1,63 @@
+<!--<div class="container">-->
+
+<!--<header class="container__header">-->
+<!--<fr-header>-->
+<!--<div class="flex-row flex-x&#45;&#45;center">-->
+<!--<ng-container *ngIf="user$ | async as user">-->
+<!--<span>{{(isNew$ | async) ? 'ADD USER' : user.name}}</span>-->
+<!--</ng-container>-->
+<!--</div>-->
+<!--</fr-header>-->
+<!--</header>-->
+
+<!--<main class="container__main">-->
+<!--<mat-progress-bar *ngIf="isLoadingUser$ | async" mode="indeterminate"></mat-progress-bar>-->
+<!--<h2 *ngIf="loadUserError$ | async" class="text-center">-->
+<!--Some error occurred during fetch of the user-->
+<!--</h2>-->
+
+<!--<ng-container *ngIf="user$ | async as user">-->
+<!--<div class="flex-row m-b-1">-->
+<!--<fr-users-editor-form [state]="state$ | async"-->
+<!--[user]="user"-->
+<!--[isNew]="isNew$ | async"-->
+<!--[isReadOnly]="!(canBeModified$ | async)"-->
+<!--(changed)="patchUser($event)"-->
+<!--&gt;</fr-users-editor-form>-->
+<!--</div>-->
+
+<!--<h2 *ngIf="saveError$ | async" class="text-center">-->
+<!--Some error occurred during save of the user-->
+<!--</h2>-->
+<!--</ng-container>-->
+<!--</main>-->
+
+<!--<footer class="container__footer">-->
+<!--<div class="container__footer__actions">-->
+<!--<div class="button-wrapper">-->
+<!--<button mat-button-->
+<!--color=transparent-->
+<!--type="button"-->
+<!--(click)="cancel()">-->
+<!--{{!(canBeModified$ | async) ? 'Back to list' : 'CANCEL'}}-->
+<!--</button>-->
+<!--<button *ngIf="isSaving$ | async"-->
+<!--mat-button-->
+<!--color=transparent-->
+<!--type="button"-->
+<!--disabled>-->
+<!--SAVING...-->
+<!--</button>-->
+
+<!--<button *ngIf="(canBeSaved$ | async) && !(isSaving$ | async)"-->
+<!--mat-button-->
+<!--color="primary"-->
+<!--type="submit"-->
+<!--(click)="save()"-->
+<!--[disabled]="!(isSaveEnabled$ | async)">-->
+<!--SAVE-->
+<!--</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--</footer>-->
+<!--</div>-->

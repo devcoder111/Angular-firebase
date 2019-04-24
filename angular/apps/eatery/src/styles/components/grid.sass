@@ -1,0 +1,55 @@
+.flex-row
+  display: flex
+  flex-direction: row
+  flex-wrap: wrap
+  justify-content: flex-start
+  align-items: flex-start
+  > *
+    flex: 1 1
+
+  &--grid
+    margin: 0 -16px
+
+  &--short
+    padding-right: 31%
+
+.flex-col
+  display: flex
+  flex-direction: column
+  flex-basis: 100%
+  @media (min-width: 768px)
+    flex-basis: 0
+
+  &--grid
+    margin: 0 16px
+
+  &--4
+    flex-grow: 1.5
+
+  &--1
+    flex-grow: unset
+
+  &--offset-1
+    padding-left: 12.5% //to left half the space empty
+    @media (max-width: 1000px)
+      padding-left: 0
+
+.flex-no-grow
+  > *
+    flex: 0 0
+
+.flex-grow-1
+  flex: 1 0
+
+.flex-x-align-center
+  align-items: center
+
+.flex-x-justify-center
+  justify-content: center
+
+.flex-x-justify-space-between
+  justify-content: space-between
+
+.flex-x--center
+  justify-content: center
+  align-items: center

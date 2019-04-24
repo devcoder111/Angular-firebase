@@ -1,0 +1,51 @@
+// labels
+.status-label
+  display: block
+  line-height: 20px
+  text-align: center
+  color: white
+  font-weight: 400
+  font-size: 12px
+  border-radius: 2px
+  margin-left: 10px
+  padding: 0 6px
+  background-color: grey
+  &--active, &--done
+    background-color: #329f51
+  &--deactivated, &--deleted
+    background-color: #c94a5b
+  &--draft
+    background-color: $colorSlateGrey
+  &--processing, &--read
+    background-color: $colorSeafoamBlue
+  &--processed, &--notSent
+    background-color: $colorSlateBlue
+  &--voided
+    background-color: #a744c9
+  &--toApprove
+    background-color: $colorDustyOrange //not used
+  &--sent
+    background-color: $colorAzure
+  &--actionNeeded, &--rejected
+    background-color: $colorFadedRed //rejected not used too
+
+//messages
+.status-message
+  margin: -2rem -2rem 1.5rem
+  padding: 1px 2rem
+  background-color: lightgray
+  color: gray
+  &--rejected
+    background-color: #fcefef
+    color: $colorFadedRed
+  &--sent
+    background-color: #f2f9fd
+    color: $colorAzure
+  &--notSent, &--read
+    background-color: #f2fafb
+    color: $colorSeafoamBlue
+
+.dotted-frame
+  border: dashed 1px silver
+  color: $colorWarmGray
+  padding: 10px

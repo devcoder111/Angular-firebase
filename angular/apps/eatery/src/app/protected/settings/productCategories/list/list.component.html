@@ -1,0 +1,83 @@
+<div class="container">
+
+  <header class="container__header">
+    <fr-header>Product categories</fr-header>
+  </header>
+
+  <main class="container__main">
+
+    <mat-progress-bar *ngIf="isLoading$ | async; else list" mode="indeterminate"></mat-progress-bar>
+    <h2 *ngIf="loadError$ | async" class="text-center">Some error occurred during fetch of product categories</h2>
+
+    <ng-template #list>
+      <div class="button-wrapper">
+        <button mat-button type="button" (click)="startEdit(-1)" class="button--add">
+          <mat-icon>add</mat-icon>
+          <span>Add product category</span>
+        </button>
+      </div>
+
+      <span>Create a new category name for My Products with a maximum count of 15 characters</span>
+
+      <fr-product-categories-list-filter [filter]="filter$ | async" (changed)="setFilter($event)"></fr-product-categories-list-filter>
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th class="button-container">Actions</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <ng-container *ngIf="productCategories$ | async as productCategories">
+        <div class="table-wrapper">
+          <table *ngIf="productCategories.length; else noItems" class="table">
+            <tbody>
+              <tr *ngIf="editing == -1">
+                <td colspan="2" class="product-category-form">
+                  <fr-product-categories-editor [category]="{}" (resulted)="stopEditing()"></fr-product-categories-editor>
+                </td>
+              </tr>
+              <tr *ngFor="let category of productCategories;trackBy: trackByFn()">
+                <td *ngIf="editing !== category.id">
+                  {{ category.name }}
+                </td>
+                <td *ngIf="editing !== category.id" class="button-container">
+                  <button mat-icon-button *ngIf="!editing && canBeDeleted(category)" (click)="startEdit(category.id)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button *ngIf="!editing && canBeDeleted(category)" (click)="remove(category)" [disabled]="isLocked(category)">
+                    <mat-icon>{{isLocked(category) ? 'lock' : 'delete'}}</mat-icon>
+                  </button>
+                  <button mat-icon-button *ngIf="!editing && canBeRestored(category)" (click)="restore(category)">
+                    <mat-icon>undo</mat-icon>
+                  </button>
+                </td>
+                <td *ngIf="editing == category.id" colspan="2" class="product-category-form">
+                  <fr-product-categories-editor [category]="category" (resulted)="stopEditing()"></fr-product-categories-editor>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="total">Showing {{productCategories.length}} categories</div>
+        </div>
+
+        <ng-template #noItems>
+          <div *ngIf="isFilterUsed$ | async; else messageForNoItemsAtAll">
+            <hr/>
+            <h3 class="text-center m-b-0">No results for your filter. Try other options</h3>
+          </div>
+          <ng-template #messageForNoItemsAtAll>
+            <hr/>
+            <h3 class="text-center m-b-0">No categories yet.
+              <a (click)="startEdit(-1)" href="javascript:">
+                Create first one
+              </a>
+            </h3>
+          </ng-template>
+        </ng-template>
+      </ng-container>
+    </ng-template>
+  </main>
+</div>

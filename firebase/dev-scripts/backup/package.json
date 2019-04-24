@@ -1,0 +1,19 @@
+{
+  "name": "backup",
+  "scripts": {
+    "lint": "tslint --project tsconfig.json",
+    "build": "tsc",
+    "start": "yarn && yarn build && node dist/firebase/dev-scripts/backup/src/index.js"
+  },
+  "main": "dist/firebase/dev-scripts/backup/src/index.js",
+  "dependencies": {
+    "firebase-admin": "^6.0.0",
+    "fs-extra": "^7.0.0"
+  },
+  "devDependencies": {
+    "@firebase/firestore-types": "^0.6.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.9.2"
+  },
+  "private": true
+}

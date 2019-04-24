@@ -1,0 +1,83 @@
+<mat-progress-bar *ngIf="isLoadingImages$ | async" mode="indeterminate"></mat-progress-bar>
+<div *ngFor="let task of tasks; trackBy:trackByFn()">
+  <mat-progress-bar *ngIf="task.status !== 'completed'"
+    mode="determinate" [value]="task.progress$ | async | number"></mat-progress-bar>
+  <p *ngIf="task.error">error: {{task.error.message}}</p>
+</div>
+<div class="dropzone" *ngIf="(!(images$ | async) || (images$ | async).length == 0)">
+  <input type="file" multiple (change)="uploadFile($event)" [disabled]="isReadOnly"
+         class="dropzone__file"
+         title="Click to upload new photo"
+         accept="image/vnd.sealedmedia.softseal-jpg,image/jpeg,image/pjpeg,image/png"/>
+  <div class="dropzone__text">
+    <p class="dropzone__text__description">
+      <span>The following file formats are supported: JPG, PNG (10 MB per file).</span>
+      <br/>
+      <strong>Drag files here to upload</strong>
+    </p>
+    <div>
+      <p class="dropzone__text__before-button">OR</p>
+      <button type="button" mat-button color="primary">Browse from computer</button>
+    </div>
+  </div>
+</div>
+<div *ngIf="imagesArray$ | async as images">
+  <div *ngIf="images.length>0">
+    <fr-previewer [images]="selectedImage || [images[0].downloadURL]"></fr-previewer>
+  </div>
+  <div *ngIf="(imagesArray$ | async).length>0" class="button-file">
+    <input type="file"
+           multiple
+           (change)="uploadFile($event)"
+           [disabled]="isReadOnly"
+           class="dropzone__file-button"
+           title="Click to upload new photo"
+           accept="image/vnd.sealedmedia.softseal-jpg,image/jpeg,image/pjpeg,image/png"/>
+    <button type="button"
+            mat-button
+            class="button--add"
+            [disabled]="isReadOnly">
+      <mat-icon>add</mat-icon>
+      <span>Add page</span>
+    </button>
+
+    <ng-container *ngIf="visibleImages$ | async as carouselImages">
+      <div [sortablejs]="carouselImages" [sortablejsOptions]="carouselOptions" class="carousel">
+        <div *ngFor="let image of carouselImages" class="carousel-item">
+          <img *ngIf="image"  [src]="image.downloadURL" (click)="showImage(image.downloadURL)"  />
+          <div *ngIf="image">
+            <button mat-icon-button
+                    type="button"
+              (click)="showImage(image.downloadURL)"
+                    class="mat-paginator-navigation-previous">
+              <mat-icon>zoom_in</mat-icon>
+            </button>
+
+            <button mat-icon-button
+                    type="button"
+              (click)="deleteImage(image)"
+                    class="mat-paginator-navigation-next"
+              [disabled]="isReadOnly">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </div>
+        </div>
+        <button mat-icon-button
+                type="button"
+          (click)="carouselGetPrevPage()"
+          [disabled]="!(carouselHasPrev$ | async)"
+                class="mat-paginator-navigation-previous carousel-button carousel-button__prev">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <button mat-icon-button
+                type="button"
+          (click)="carouselGetNextPage()"
+          [disabled]="!(carouselHasNext$ | async)"
+                class="mat-paginator-navigation-next carousel-button carousel-button__next">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </ng-container>
+  </div>
+</div>

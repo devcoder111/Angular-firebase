@@ -1,0 +1,266 @@
+<form [formGroup]="form"
+      novalidate
+      id="form">
+  <div class="flex-row flex-row--grid">
+    <div class="flex-col flex-col--grid flex-grow-1">
+      <mat-form-field>
+        <fr-autocomplete-input formControlName="supplierId"
+                               [config]="selectSupplierConfig"
+                               [placeholder]="(order.supplierId ? '' : 'Click to select ') + 'Supplier'"></fr-autocomplete-input>
+        <mat-error *ngIf="form.controls['supplierId'].hasError('required')">
+          Field is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <fr-autocomplete-input formControlName="recentOrderId"
+                               [config]="selectRecentOrderConfig"
+                               [placeholder]="order.recentOrderId ? 'Recent order' : 'Select Recent Order (optional)'"></fr-autocomplete-input>
+      </mat-form-field>
+    </div>
+
+    <div class="flex-col flex-col--grid flex-grow-1">
+      <div class="flex-row flex-row--grid">
+        <div class="flex-col flex-col--grid">
+          <mat-form-field class="textarea-wrapper">
+            <textarea matInput
+                      matTextareaAutosize
+                      matAutosizeMaxRows="7"
+                      formControlName="otherInstructions"
+                      placeholder="Other instructions">
+            </textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="flex-col flex-col--grid print flex-x-align-center"
+             *ngIf="order.publicPage.pdf && order.publicPage.pdf.url">
+          <h4 class="m-t-0">Print</h4>
+          <a type="button"
+             target="_blank"
+             [href]="order.publicPage.pdf.url">
+            <mat-icon>print</mat-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-row flex-row--grid flex-x-align-center">
+    <div class="flex-col flex-col--grid">
+      <div class="calendar flex-row flex-row--grid">
+        <div class="flex-col flex-col--grid">
+          <mat-form-field>
+            <input matInput
+                   formControlName="deliveryDate"
+                   placeholder="Delivery date"
+                   [min]="minDate"
+                   [matDatepicker]="picker">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="form.controls['deliveryDate'].hasError('required')">
+              Field is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="form.controls['deliveryDate'].hasError('minDate')">
+              Delivery date should be <strong>today or later</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flex-col flex-col--grid calendar__tomorrow-column">
+          <button mat-button
+                  color="gray"
+                  class="calendar__tomorrow-column__button"
+                  type="button"
+                  (click)="setDeliveryDateToTomorrow()"
+                  [disabled]="isReadOnly">Tomorrow
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-col flex-col--grid">
+      <div class="delivery"
+           (mouseenter)="isDeliveryInfoPopoverVisible = true"
+           (mouseleave)="isDeliveryInfoPopoverVisible = false">
+        <h4 class="m-t-0 flex-row flex-x-align-center flex-no-grow">
+          <span class="title">Delivery Address:</span>
+          <mat-icon>info</mat-icon>
+        </h4>
+        <mat-card class="delivery--popover" *ngIf="isDeliveryInfoPopoverVisible">
+          <mat-card-content>
+            <h4 *ngIf="location" class="address">{{location.address}}</h4>
+            <div *ngIf="supplier">
+              <hr/>
+              <h4>Supplier's ordering methods:</h4>
+              <p *ngFor="let om of supplier.orderMethods | keys" class="supplier-contact">
+                <ng-container [ngSwitch]="om">
+                  <mat-icon *ngSwitchCase="'email'" title="Email">email</mat-icon>
+                  <mat-icon *ngSwitchCase="'sms'" title="SMS">perm_phone_msg</mat-icon>
+                  <mat-icon *ngSwitchCase="'fax'" title="Fax">print</mat-icon>
+                </ng-container>
+                {{supplier.orderMethods[om].value}}
+              </p>
+              <ng-container *ngIf="(supplier.ccEmailList | keys).length">
+                <h4>Supplier's CC emails:</h4>
+                <p *ngFor="let ccEmail of supplier.ccEmailList | keys">{{ccEmail}}</p>
+              </ng-container>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <div class="button-wrapper">
+    <button *ngIf="!isReadOnly"
+            [ngClass]="{'gray':!order.supplierId}"
+            [disabled]="!order.supplierId"
+            mat-button
+            type="button"
+            (click)="selectProducts()"
+            class="button--add">
+      <mat-icon>add</mat-icon>
+      <span>* Add product</span>
+    </button>
+  </div>
+
+  <h2 *ngIf="loadProductsError" class="text-center">
+    Some error occured during fetch of order products
+  </h2>
+
+  <mat-progress-bar *ngIf="isLoadingProducts; else productsTemplate" mode="indeterminate"></mat-progress-bar>
+
+
+  <ng-template #productsTemplate>
+    <ng-container *ngIf="products && !products.length">
+      <div class="dotted-frame">
+        <p>Step 1. Select a <strong>supplier</strong></p>
+        <p>Step 2. Set your <strong>delivery date</strong></p>
+        <p>Step 3. Click on <strong>+ ADD PRODUCT</strong> to add products to invoice list</p>
+
+        <p>* Required fields</p>
+      </div>
+    </ng-container>
+
+    <div class="table-wrapper" *ngIf="products?.length">
+      <table class="table table--simple">
+        <thead>
+        <tr>
+          <td>Product Code</td>
+          <td>Image</td>
+          <td>Product Name</td>
+          <td>Unit Price</td>
+          <td>Quantity</td>
+          <td>Unit Type</td>
+          <td>Amount</td>
+          <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let product of products; trackBy: trackByFn()"
+            frOrdersEditorProductsProduct
+            (productsChanged)="onProductsChanged($event)"
+            [product]="product"
+            [isReadOnly]="isReadOnly"
+            class="table__input-line"></tr>
+        <ng-container *ngIf="isGSTRegistered$ | async">
+          <tr class="table__total">
+            <td></td>
+            <td></td>
+            <td colspan="3"></td>
+            <td class="text-right">Subtotal:</td>
+            <td>{{order.subtotal | money}}</td>
+            <td></td>
+          </tr>
+          <tr class="table__total">
+            <td></td>
+            <td></td>
+            <td colspan="3"></td>
+            <td class="text-right">Add tax:</td>
+            <td>{{order.taxes | money}}</td>
+            <td></td>
+          </tr>
+        </ng-container>
+        <tr class="table__total">
+          <td></td>
+          <td colspan="3"></td>
+          <td>
+            <span class="text-danger"
+                  *ngIf="supplier?.minimumOrderTotal && order.total < supplier.minimumOrderTotal">
+              Supplier minimum total: {{supplier.minimumOrderTotal | money}}
+            </span>
+            <span class="text-danger"
+                  *ngIf="supplier?.maximumOrderTotal && order.total > supplier.maximumOrderTotal">
+              Supplier maximum total: {{supplier.maximumOrderTotal | money}}
+            </span>
+          </td>
+          <td class="text-right">Total:</td>
+          <td>{{order.total | money}}</td>
+          <td></td>
+        </tr>
+        </tbody>
+      </table>
+      <p class="text-muted" *ngIf="!!(supplier?.deliveryTermsAndConditions)">
+        Note: {{supplier.deliveryTermsAndConditions}}
+      </p>
+    </div>
+  </ng-template>
+
+</form>
+
+
+<ng-template #productsSelectorLineMultipleAmountTemplate
+             let-item="item"
+             let-setAmount="setAmount"
+             let-getAmount="getAmount">
+  <mat-grid-list rowHeight="100px" cols="5" class="productsSelectorLineMultipleAmountTemplate">
+    <mat-grid-tile>
+      <img [src]="item.image || 'assets/image-placeholder.png'" class="table__icon-image" alt="Preview"/>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <p><span class="gray-box">{{item.nickname}}</span></p>
+      <p>{{item.code}}</p>
+      <p class="m-b-0">{{item.name}}</p>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <span *ngIf="!item.orderUnitTypeId">{{item.lastPriceFromHistory | money}}</span>
+      <span *ngIf="item.orderUnitTypeId">{{priceByOrderUnit(item) | money}}</span>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <div>
+        <div class="input-wrapper">
+        <span class="decrease-count"
+              (click)="ref.value = (ref.value == 0 ? 0 : ref.value  - 1); setAmount(item, + (ref.value))">-</span>
+          <input #ref type="number" min="0" class="count-input" value="{{getAmount(item)}}"
+                 (change)="setAmount(item, + ($event.target.value))">
+          <span class="increase-count" (click)="ref.value = ref.value - 0 + 1; setAmount(item, + (ref.value))">+</span>
+        </div>
+        <small *ngIf="getAmount(item) < 0" class="text-danger">Negative values are not allowed</small>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <span *ngIf="!item.orderUnitTypeId">{{item.invoiceUnitTypeName}}</span>
+      <span *ngIf="item.orderUnitTypeId">{{item.orderUnitTypeName}}</span>
+    </mat-grid-tile>
+  </mat-grid-list>
+</ng-template>
+
+
+<ng-template #recentOrderSelectorTemplate
+             let-item="item"
+             let-select="select"
+>
+  <mat-grid-list rowHeight="40px" cols="4" class="recentOrderSelectorTemplate" (click)="select(item)">
+    <mat-grid-tile>
+      <span class="text-left">{{item.number}}</span>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <span>{{item.deliveryDate | date : 'dd MMM yyyy'}}</span>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <span class="text-right">{{item.total | money}}</span>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <span class="text-right">{{item.status | orderStatusTitleBySlug}}</span>
+    </mat-grid-tile>
+  </mat-grid-list>
+</ng-template>

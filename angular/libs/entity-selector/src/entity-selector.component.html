@@ -1,0 +1,138 @@
+<div class="dialog">
+  <h4 *ngIf="data.title" mat-dialog-title class="dialog__title">{{data.title}}</h4>
+  <div mat-dialog-title class="flex-row search-box" [class.search-box--with-title]="!!data.title">
+    <mat-form-field>
+      <input matInput #search [formControl]="searchControl" [placeholder]="data.searchBoxPlaceholder || 'Search...'">
+    </mat-form-field>
+  </div>
+  <ng-template #loading>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </ng-template>
+  <div *ngIf="data.mode === 'single'" class="items items--mode-single">
+    <ng-container *ngIf="items$ | async as items; else loading">
+      <mat-dialog-content class="dialog__content dialog__content--no-padding">
+        <h4 *ngIf="!items.length" class="items__no-items-message">
+          No results
+        </h4>
+        <ng-container *ngIf="data.customTemplate;else defaultSingleTemplate">
+          <ng-container *ngFor="let item of items; trackBy: trackByFn()">
+            <ng-container
+              *ngTemplateOutlet="data.customTemplate; context: getContextForCustomTemplateForSingleMode(item)"></ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-template #defaultSingleTemplate>
+          <div *ngFor="let item of items; trackBy: trackByFn()"
+               (click)="select(item)"
+               class="items__item">
+            {{item[data.displayField]}}
+          </div>
+        </ng-template>
+      </mat-dialog-content>
+      <mat-dialog-actions *ngIf="items.length" class="dialog__actions dialog__actions--align-left">
+        <span class="items__counter">
+          {{items.length}} results
+        </span>
+      </mat-dialog-actions>
+    </ng-container>
+  </div>
+  <div *ngIf="data.mode === 'multiple'" class="items items--mode-multiple">
+    <ng-container *ngIf="items$ | async as items; else loading">
+      <h4 *ngIf="!items.length" class="items__no-items-message">
+        No results
+      </h4>
+      <ng-container *ngIf="items.length">
+        <div class="items__amount-selector">
+          <a href="javascript:" (click)="deselectAll()">None</a>
+          <span>|</span>
+          <a href="javascript:" (click)="selectAll()">All</a>
+        </div>
+        <mat-dialog-content class="dialog__content dialog__content--no-padding">
+          <ng-container *ngIf="data.customTemplate;else defaultMultipleTemplate">
+            <ng-container *ngFor="let item of items; trackBy: trackByFn()">
+              <ng-container
+                *ngTemplateOutlet="data.customTemplate; context: getContextForCustomTemplateForMultipleMode(item)"></ng-container>
+            </ng-container>
+          </ng-container>
+          <ng-template #defaultMultipleTemplate>
+            <div *ngFor="let item of items; trackBy: trackByFn()"
+                 class="items__item">
+              <mat-checkbox [checked]="isItemSelected(item)" (change)="toggleMultiple(item)">
+                {{item[data.displayField]}}
+              </mat-checkbox>
+            </div>
+          </ng-template>
+        </mat-dialog-content>
+      </ng-container>
+      <p *ngIf="items.length" class="items__counter">
+        {{items.length}} results | {{getSelectedAmount()}} selected
+      </p>
+      <mat-dialog-actions class="dialog__actions">
+        <div class="button-wrapper">
+          <button type="button" mat-button color="transparent" mat-dialog-close>{{data.cancelButtonText ||
+            'Cancel'}}
+          </button>
+          <button type="button" mat-button color="primary"
+                  (click)="confirmMultiple()"
+                  [disabled]="data.minimumItems > 0 && getSelectedAmount() < data.minimumItems">{{data.submitButtonText
+            ||
+            'Submit'}}
+          </button>
+        </div>
+      </mat-dialog-actions>
+    </ng-container>
+  </div>
+  <div *ngIf="data.mode === 'multipleAmount'" class="items items--mode-multiple-amount">
+    <ng-container *ngIf="items$ | async as items; else loading">
+      <h4 *ngIf="!items.length" class="items__no-items-message">
+        No results
+      </h4>
+      <ng-container *ngIf="items.length">
+        <mat-dialog-content class="dialog__content dialog__content--no-padding">
+          <ng-container *ngIf="data.customTemplate;else defaultMultipleTemplate">
+            <ng-container *ngFor="let item of items; trackBy: trackByFn()">
+              <ng-container
+                *ngTemplateOutlet="data.customTemplate; context: getContextForCustomTemplateForMultipleAmountMode(item)"></ng-container>
+            </ng-container>
+          </ng-container>
+          <ng-template #defaultMultipleTemplate>
+            <div *ngFor="let item of items; trackBy: trackByFn()"
+                 class="items__item">
+              <div class="flex-row flex-row--grid flex-x--center">
+                <div class="flex-col flex-col--grid">
+                  {{item[data.displayField]}}
+                </div>
+                <div class="flex-col flex-col--grid">
+                  <mat-form-field class="mat-form-field--no-padding-bottom">
+                    <input matInput
+                           placeholder="Amount"
+                           type="number"
+                           min="0"
+                           value="0"
+                           (change)="setAmount(item, +($event.target.value))"/>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </mat-dialog-content>
+        <p *ngIf="items.length" class="items__counter">
+          {{items.length}} results
+        </p>
+      </ng-container>
+      <mat-dialog-actions class="dialog__actions">
+        <div class="button-wrapper">
+          <button type="button" mat-button color="transparent" mat-dialog-close>
+            {{data.cancelButtonText || 'Cancel'}}
+          </button>
+          <button type="button"
+                  mat-button
+                  color="primary"
+                  (click)="confirmMultipleAmount()"
+                  [disabled]="areSelectedItemsInvalid() || !areItemsSelected()">
+            {{data.submitButtonText || 'Submit'}}
+          </button>
+        </div>
+      </mat-dialog-actions>
+    </ng-container>
+  </div>
+</div>
